@@ -1,0 +1,57 @@
+
+
+
+
+
+/* Global Styles & Colors */
+:root {
+  --color-background: #ffffff;
+
+  
+  --color-warmup:#787c7e;
+  --color-work:#6aaa64;
+  --color-rest:#ADD8E6;
+  --color-activityrest:#c9b458;
+  --color-setrest:#c9b458;
+  --color-cooldown:#787c7e;
+}
+
+  html {
+    height: 100%;
+  }
+
+  body {
+    height: 100%;
+    background-color: var(--color-background);
+    margin: 0;
+    padding: 0;
+    /* Prevent scrollbar appearing on page transition */
+    overflow-y: hidden;
+  }
+
+
+
+.container {
+  display:inline-block;
+}
+.content {
+  float:left;
+  margin-right:10px;
+}
+
+
+#slots_container {
+  position:absolute;
+  left:300px;
+
+}
+
+
+#screen_running{
+  display:none;
+  
+  
+}
+#screen_selection{
+  padding-top:300px;
+}

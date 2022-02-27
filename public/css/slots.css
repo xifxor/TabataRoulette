@@ -1,0 +1,47 @@
+.slots_container{
+    height:150px;
+    border:solid 4px black;
+    display:inline-block;
+   /* overflow-y: hidden;*/
+    /*
+    background-image: linear-gradient(
+             rgba(0,0,0,0.8),
+             rgba(255,255,255,1),
+             rgba(255,255,255,1), 
+             rgba(255,255,255,1), 
+             rgba(255,255,255,1), 
+             rgba(0,0,0,0.8));
+    */
+  
+  }
+
+  
+  .slot {
+    position:relative;
+    border:1px solid blue; /* cant remove this without hitting bug */
+    width:100px;
+    float:left;
+    margin-right:10px;
+    border-right:solid 1px black; /* doesnt do anything */
+
+    
+  }
+  
+  .slot_line {
+    height:0px;
+    border-top:solid 2px red;
+
+
+  }
+
+
+  .slot_image_container {
+    border:1px solid green;
+  }
+
+  .slot_image_container img {
+    /*border:1px solid green;*/
+    display: block;
+    width:100px;
+    /*filter: blur(1px);*/
+  }
