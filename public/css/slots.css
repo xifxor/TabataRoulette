@@ -2,7 +2,7 @@
     height:150px;
     border:solid 4px black;
     display:inline-block;
-   /* overflow-y: hidden;*/
+    overflow-y: hidden;
     /*
     background-image: linear-gradient(
              rgba(0,0,0,0.8),
@@ -18,7 +18,7 @@
   
   .slot {
     position:relative;
-    border:1px solid blue; /* cant remove this without hitting bug */
+    border:1px solid white; /* cant remove this without hitting bug */
     width:100px;
     float:left;
     margin-right:10px;
@@ -29,18 +29,16 @@
   
   .slot_line {
     height:0px;
-    border-top:solid 2px red;
-
-
+    border-top:solid 2px rgb(59, 59, 59);
   }
 
 
   .slot_image_container {
-    border:1px solid green;
+    /*border:1px solid green;*/
   }
 
   .slot_image_container img {
-    /*border:1px solid green;*/
+   /* border:1px solid green;*/
     display: block;
     width:100px;
     /*filter: blur(1px);*/
