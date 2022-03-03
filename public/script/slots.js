@@ -59,7 +59,7 @@ function SlotGroup(element, slotcount)
 
         //create the slot
         max = 25 + (index * 10);
-        _this.slots.push( new Slot(divSlot, index, arrImages, max, 2) );
+        _this.slots.push( new Slot(divSlot, index, activityList, max, 2) );
 
     });
     
@@ -99,7 +99,7 @@ SlotGroup.prototype.stop = function() {
 
 
 
-function Slot(element, name, imagepaths, maxspeed, step) {
+function Slot(element, name, activities, maxspeed, step) {
     
     var _this = this;
     _this.element = element; //dom element of the slot
@@ -110,7 +110,7 @@ function Slot(element, name, imagepaths, maxspeed, step) {
     _this.interval = 50;
     _this.intialposition = 0;
     _this.maxSpeed = maxspeed; //max speed this slot can have
-    _this.imagepaths = imagepaths; 
+    _this.activities = activities; 
     _this.loadedimages = 0;
     _this.yoffset = 0; //the hidden amount above the top of the slot container (automatically calculated)
     _this.centerPointWithOffset = 0;
