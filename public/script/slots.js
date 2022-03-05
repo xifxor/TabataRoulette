@@ -1,27 +1,11 @@
 
-
-
-
-var arrImages = [
-    "hipthrusts.png",
-    "lunge1.png",
-    "mountainclimbers1.png",
-    "plank.png",
-    "pushup1.png",
-    "sideplank1.png",
-    "situps.png",
-    "squats1.png"
-];
-
-
-
 var activityList = [
     {"name" : "Hip Thrusts", "image" : "hipthrusts.png"},
     {"name" : "Lunge", "image" : "lunge1.png"},
     {"name" : "Mountain Climbers", "image" : "mountainclimbers1.png"},
     {"name" : "Plank", "image" : "plank.png"},
     {"name" : "Pushups", "image" : "pushup1.png"},
-    {"name" : "Lunge", "image" : "sideplank1.png"},
+    {"name" : "Sideplank", "image" : "sideplank1.png"},
     {"name" : "Situps", "image" : "situps.png"},
     {"name" : "Squats", "image" : "squats1.png"}
 ];
@@ -59,7 +43,7 @@ function SlotGroup(element, slotcount)
 
         //create the slot
         max = 25 + (index * 10);
-        _this.slots.push( new Slot(divSlot, index, arrImages, max, 2) );
+        _this.slots.push( new Slot(divSlot, index, activityList, max, 2) );
 
     });
     
@@ -99,7 +83,7 @@ SlotGroup.prototype.stop = function() {
 
 
 
-function Slot(element, name, imagepaths, maxspeed, step) {
+function Slot(element, name, activities, maxspeed, step) {
     
     var _this = this;
     _this.element = element; //dom element of the slot
@@ -110,7 +94,7 @@ function Slot(element, name, imagepaths, maxspeed, step) {
     _this.interval = 50;
     _this.intialposition = 0;
     _this.maxSpeed = maxspeed; //max speed this slot can have
-    _this.imagepaths = imagepaths; 
+    _this.activities = activities; 
     _this.loadedimages = 0;
     _this.yoffset = 0; //the hidden amount above the top of the slot container (automatically calculated)
     _this.centerPointWithOffset = 0;
@@ -141,32 +125,32 @@ function Slot(element, name, imagepaths, maxspeed, step) {
 
 
     //load & append images to images container
-    $(arrImages).each(function(){
+    _this.activities.forEach( (activity, index) => {
 
-        imagepath = imagePath + this;
+        activity['fullpath'] = imagePath + activity['image'];
         
         $('<img>')
-            .attr("src",  imagepath)
+            .attr("src",  activity['fullpath'])
             .appendTo( _this.imagesdiv )  
             .on('load', function(){
                 _this.loadedimages++; //incremement the loaded images counter
                
                 //check if all images are loaded
-                if (_this.loadedimages >= _this.imagepaths.length)
+                if (_this.loadedimages >= _this.activities.length)
                 {
-                    console.log("Slot " + _this.slotname + ": all images loaded");
+                    console.log("Slot " + _this.slotname + ": All images loaded.");
     
-                    //calculate initial yoffset - use half way down second image for now
+                    //calculate y offset
                     $(_this.imagesdiv).find("img").each(function(index){
                   
                         if (index < _this.imagetocenteron ){
                             _this.yoffset -= $(this).height();
                         }
                         else if (index == _this.imagetocenteron ){
-                           // _this.yoffset -= ($(this).height() / 2);
-                           //console.log("Slot " + _this.slotname + ": el height: " +  $(_this.element).parent().height());
+
                            _this.yoffset +=  ( $(_this.element).parent().height() / 2) - ($(this).height() / 2);
-                           _this.activity = $(this).attr("src");
+                           _this.activity = activity; //set the currently selected activity
+
                         }
                         //console.log("Slot " + _this.slotname + ": yoffset=" + _this.yoffset);
                        
@@ -180,14 +164,8 @@ function Slot(element, name, imagepaths, maxspeed, step) {
     
             });
    
-        
-       // _this.images.push(temp);
 
     });
-
-    
-    //add onload handler to all images
-    //$(this.imagesdiv).find("img").each(function(){ });
             
 }
 
@@ -271,30 +249,48 @@ Slot.prototype.stop = function() {
         imageCenterToCenterPointDelta = imageCenterPoint - _this.centerPointWithOffset; //incorrect#
        // distanceToNextImageCenter = 
         cumulativeHeight += $(this).height();
-
+        /*
         console.log("Slot " + _this.slotname + ": index=" + index 
                             + " imageCenterPoint="  + imageCenterPoint
                             + " imageCenterToCenterPointDelta="  + imageCenterToCenterPointDelta
                             + " cumulativeHeight="  + cumulativeHeight
                             
-                            );
+                            );*/
 
         //select the image if it's center line hasnt yet met the container center line
-        //the last one selected will be the actual selected one
+        //the last one that matches will be the actual selected one
         if (imageCenterToCenterPointDelta < 0){
-            _this.activity = $(this).attr("src");
+            //we found the selected image.  see which of the activities it relates to 
+            selectedImage = this;
+            console.log("Slot " + _this.slotname + " : selected image found")
+           
+            _this.activities.forEach( (activity, index) => {
+
+                //console.log( "Slot " + _this.slotname + " :Selected image: " + $(selectedImage).attr("src"))
+                //console.log("Slot " + _this.slotname + ": checing activity : " + activity['fullpath']);
+                //if ( $(selectedImage).attr("src") == activity['image'])
+                if ( $(selectedImage).attr("src") == activity['fullpath'])
+                {
+                    console.log("Slot " + _this.slotname + ":  selected activity: " + activity['name']);
+                    _this.activity = activity;
+                }
+
+            });
+           // _this.activity = $(this).attr("src");
+
+
             distanceToSelectedImage = -imageCenterToCenterPointDelta;
         }
 
     });
 
     //if image sizes are all the same then the new padding always comes out to 1 x image height
-
+    /*
     console.log("Slot " + _this.slotname 
         + ": _this.activity=" + _this.activity 
         + ":  _this.toppadding=" +  _this.toppadding
         + " distanceToSelectedImage="  + distanceToSelectedImage);
-
+    */
 
     /*
     //change padding by the ditance to selected image
@@ -311,26 +307,26 @@ Slot.prototype.stop = function() {
     
     _this.timer = window.setInterval(function() {
         paddingToAdd = Math.floor( remainingDistance/2);
-        
+        /*
         console.log("Slot " + _this.slotname 
             + ": remainingDistance: " + remainingDistance
             + ": paddingToAdd: " + paddingToAdd
-            
             );
+            */
 
         // if there's only a small distance left just finish it
         if( remainingDistance > 3) {
             _this.toppadding += paddingToAdd;
             
-            console.log("Slot " + _this.slotname + ": Setting top padding to: "+ _this.toppadding);
+            //console.log("Slot " + _this.slotname + ": Setting top padding to: "+ _this.toppadding);
             $(_this.imagesdiv).css({"padding-top" : _this.toppadding  });
 
         }else{
             _this.toppadding += remainingDistance;
-            console.log("Slot " + _this.slotname + ": Final setting top padding to: "+ _this.toppadding);
+            //console.log("Slot " + _this.slotname + ": Final setting top padding to: "+ _this.toppadding);
             $(_this.imagesdiv).css({"padding-top" : _this.toppadding  });
            
-            console.log("Slot " + _this.slotname + ": finished");
+            //console.log("Slot " + _this.slotname + ": finished");
             clearInterval(_this.timer);
             return;
         }
@@ -362,7 +358,12 @@ $(document).ready(function(){
         }else{
             s1.stop();
             $(this).val("Spin");
-            $("#exercise_list").html( s1.selectedActivities.join("<br>"));
+           
+            arr = s1.selectedActivities.map( (a) => { return a['name'] }); 
+            $("#exercise_list").html( arr.join("<br>") );
+
+            //update config with activities
+            config.activities = s1.selectedActivities;
 
         }
 
