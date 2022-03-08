@@ -217,8 +217,26 @@ function runActivities(activities) {
 
 $(document).ready(function(){
 
+
+    //load slots
     var s1 = new SlotGroup("#slots1", 4);
     //***need to wait for s1 to properly load
+
+    //display config
+    $('#input_warm_up_time').val( config.warm_up_time );
+    $('#input_cool_down_time').val( config.cool_down_time );
+    $('#input_set_count').val( config.set_count );
+    $('#input_set_rest_duration').val( config.set_rest_duration );
+    $('#input_reps_count').val( config.reps_count );
+    $('#input_rep_duration').val( config.rep_duration );
+    $('#input_rep_rest_duration').val( config.rep_rest_duration );
+    $('#input_activity_rest_duration').val( config.activity_rest_duration );
+
+    //change handler
+    $("#screen_config input").change(function(){
+        console.log("Input was changed");   5
+    })
+
 
     $('#spinbutton').click(function(){
         console.log("Spin");
@@ -238,6 +256,9 @@ $(document).ready(function(){
             //update config with activities
             config.activities = s1.selectedActivities;
 
+            //show total time
+            //** set this when config changes instead
+            $(divTotalTime).html("total time: " + config.totaltimeHMS());
         }
 
     });
@@ -274,7 +295,7 @@ $(document).ready(function(){
 
     });
 
-    $(divTotalTime).html("total time: " + config.totaltimeHMS());
+   
 
 
 

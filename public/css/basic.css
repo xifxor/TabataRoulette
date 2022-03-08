@@ -40,25 +40,24 @@
 }
 
 #screen_selection{
-
+  display:block;
   align-items: center;
-  height:30%;
+
   border:solid 1px blue;  
 
 
 }
 
-.shrink {
-  height:30%;
-  transition: all 100ms linear;
-
-}
-
 #screen_running{
-  display:none;
+  display:block;
   border:solid 1px red; 
   
   
+}
+
+#screen_config {
+  display:block;
+
 }
 
 
@@ -66,4 +65,19 @@
 
   font-size:3rem;
 
+}
+
+
+
+#div_activity {
+  border:solid 1px yellow;
+  font-size:5rem;
+  text-align: center;
+
+}
+
+#div_countdown {
+  border:solid 1px blue;
+  font-size:5rem;
+  text-align: center;
 }
