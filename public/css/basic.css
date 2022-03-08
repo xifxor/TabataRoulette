@@ -5,7 +5,7 @@
 
 /* Global Styles & Colors */
 :root {
-  --color-background: #ffffff;
+  --color-background: #386933;
 
   
   --color-warmup:#787c7e;
@@ -31,27 +31,39 @@
 
 
 
-.container {
-  display:inline-block;
-}
-.content {
-  float:left;
-  margin-right:10px;
-}
 
-
-#slots_container {
-  position:absolute;
-  left:300px;
+#slots1 {
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
 
 }
 
+#screen_selection{
+
+  align-items: center;
+  height:30%;
+  border:solid 1px blue;  
+
+
+}
+
+.shrink {
+  height:30%;
+  transition: all 100ms linear;
+
+}
 
 #screen_running{
-  display:block;
+  display:none;
+  border:solid 1px red; 
   
   
 }
-#screen_selection{
-  padding-top:300px;
+
+
+#pagetitle {
+
+  font-size:3rem;
+
 }

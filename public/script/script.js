@@ -29,12 +29,7 @@ let config = {
     rep_duration : 20,  //work time per rep
     rep_rest_duration : 10,  //reset between reps
     activity_rest_duration : 0,  //rest between activities
-    activities : [
-        {"name" : "Situps", "image" : "situps.png"},
-        {"name" : "Squats", "image" : "squats1.png"},
-        {"name" : "Pushups", "image" : "pushup1.png"},
-        {"name" : "Lunge", "image" : "lunge1.png"}
-    ],
+    activities : [ ],
     totaltime : function(){
 
         time_per_activity = (this.rep_duration + this.rep_rest_duration) * this.reps_count; //time taken for each activity
@@ -54,7 +49,7 @@ let config = {
 
 
 
-function getActivitiesQueue() { //you can only use `await` in async funcions 
+function getActivitiesQueue() { 
 
     console.log("Running getActivitiesQueue()");
 
@@ -68,7 +63,8 @@ function getActivitiesQueue() { //you can only use `await` in async funcions
             "set" : "n/a",
             "rep" : "n/a",
             "activitycount" : "n/a",
-            "background-color" : "var(--color-warmup)"
+            "background-color" : "var(--color-warmup)",
+            func : function(){ }  //testing
         });
     }
 
@@ -195,6 +191,7 @@ function runActivities(activities) {
             }       
 
             //update divs
+            //* can we pass a function in the activities list instead??
             if ('set' in currentActivity){           $(divSetCount).html("Set: " + currentActivity['set']); } // + " of " + config.set_count
             if ('activitycount' in currentActivity){ $(divActivityCount).html("Activity: " + currentActivity['activitycount'] ); } // + " of " + config.activities.length
             if ('rep' in currentActivity){           $(divRepCount).html("Rep: " + currentActivity['rep'] ); } //+ " of " + config.reps_count
@@ -220,10 +217,39 @@ function runActivities(activities) {
 
 $(document).ready(function(){
 
+    var s1 = new SlotGroup("#slots1", 4);
+    //***need to wait for s1 to properly load
+
+    $('#spinbutton').click(function(){
+        console.log("Spin");
+
+        if ($(this).val() == "Spin")
+        {
+            s1.start();
+            $(this).val("Stop") ;
+        }else{
+            s1.stop();
+            $(this).val("Spin");
+           
+            //display activities 
+            //arr = s1.selectedActivities.map( (a) => { return a['name'] }); 
+            //$("#exercise_list").html( arr.join("<br>") );
+
+            //update config with activities
+            config.activities = s1.selectedActivities;
+
+        }
+
+    });
+
+
     $('#startbutton').click(function(){
         $('#startbutton').attr("disabled", true);
         console.log("Start button clicked")
-        
+
+        //$('#screen_selection').addClass('shrink');
+        $('#screen_running').show();
+
         start =  (new Date()).getTime()
        
         a = getActivitiesQueue();

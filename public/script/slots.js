@@ -121,8 +121,9 @@ function Slot(element, name, activities, maxspeed, step) {
 
     //add center line
     centerpoint =  $(_this.element).parent().height() / 2;
-    $('<div>').addClass("slot_line").css({top: centerpoint, width: 100,  position:'absolute'}).appendTo( _this.element );
+    $('<div>').addClass("slot_line").appendTo( _this.element );
 
+    //.css({top: centerpoint, width: 100,  position:'absolute'})
 
     //load & append images to images container
     _this.activities.forEach( (activity, index) => {
@@ -184,12 +185,22 @@ Slot.prototype.start = function() {
     //record container center point
     _this.centerPointWithOffset = -_this.yoffset + ($(_this.element).parent().height() / 2 );
 
+   
+
     //increase the top padding until there is enough space for the bottom image(s)
     _this.timer = window.setInterval(function() {
         console.log("-------------------");
         //increase speed up to max
         if(_this.speed < _this.maxSpeed) {
             _this.speed += _this.step;  
+        }
+
+        //blur
+        //** replace this with proper motion blur effect
+        if(_this.speed > 20){
+            $(_this.imagesdiv).addClass("blurdiv")
+        }else{
+            $(_this.imagesdiv).removeClass("blurdiv")    
         }
 
         //calculate the new required top padding
@@ -240,6 +251,8 @@ Slot.prototype.stop = function() {
     
     //clear previous timer and start a new one
     clearInterval(_this.timer);
+
+    $(_this.imagesdiv).removeClass("blurdiv");
 
     //determine the selected image. if the center line has passed then it will be the next in line
     cumulativeHeight=0;
@@ -342,32 +355,3 @@ Slot.prototype.stop = function() {
 
 };
 
-
-$(document).ready(function(){   
-
-    var s1 = new SlotGroup("#slots_container", 4);
-    //***need to wait for s1 to properly load
-
-    $(spinbutton).click(function(){
-        console.log("Spin");
-
-        if ($(this).val() == "Spin")
-        {
-            s1.start();
-            $(this).val("Stop") ;
-        }else{
-            s1.stop();
-            $(this).val("Spin");
-           
-            arr = s1.selectedActivities.map( (a) => { return a['name'] }); 
-            $("#exercise_list").html( arr.join("<br>") );
-
-            //update config with activities
-            config.activities = s1.selectedActivities;
-
-        }
-
-    });
-    
-
-});

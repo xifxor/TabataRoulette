@@ -1,45 +1,73 @@
 .slots_container{
+    position:relative;
     height:150px;
     border:solid 4px black;
     display:inline-block;
     overflow-y: hidden;
-    /*
-    background-image: linear-gradient(
-             rgba(0,0,0,0.8),
-             rgba(255,255,255,1),
-             rgba(255,255,255,1), 
-             rgba(255,255,255,1), 
-             rgba(255,255,255,1), 
-             rgba(0,0,0,0.8));
-    */
-  
+    background-color:#e9e5d9;
   }
 
+
+  
+
+  .slots_overlay {
+    position:absolute;
+    top:0px;
+    left:0px;
+    height:100%;
+    width:100%;
+   
+    z-index:1;
+    opacity: 1;
+    background-image: linear-gradient(
+             rgba(0,0,0,0.6),
+             rgba(255,255,255,0), 
+             rgba(255,255,255,0.8), 
+             rgba(255,255,255,0), 
+             rgba(255,255,255,0), 
+             rgba(255,255,255,0), 
+             rgba(255,255,255,0), 
+             rgba(255,255,255,0.6), 
+             rgba(255,255,255,0), 
+             rgba(0,0,0,0.7));
+  }
   
   .slot {
     position:relative;
-    border:1px solid white; /* cant remove this without hitting bug */
-    width:100px;
     float:left;
-    margin-right:10px;
-    border-right:solid 1px black; /* doesnt do anything */
+    width:150px;
+    height:100%;
+    border-right:solid 5px rgb(121, 121, 121);  
 
-    
   }
   
+  
   .slot_line {
-    height:0px;
-    border-top:solid 2px rgb(59, 59, 59);
+    position:absolute;
+    top: 50%;
+    width:100%;
+    border-top:dashed 1px rgb(106, 106, 106);
   }
 
 
   .slot_image_container {
     /*border:1px solid green;*/
+
+    
+
   }
 
   .slot_image_container img {
-   /* border:1px solid green;*/
     display: block;
-    width:100px;
+    width:70%;
+    margin-left: auto;
+    margin-right: auto;
+
+
     /*filter: blur(1px);*/
+  }
+
+  .blurdiv{
+    filter: blur(1px);*
+
   }
