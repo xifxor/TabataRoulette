@@ -10,37 +10,131 @@
     <script src="script/script.js"></script>
     <script src="script/slots.js"></script>
     <link rel="stylesheet" href='css/basic.css' />
+    <link rel="stylesheet" href='css/config.css' />
     <link rel="stylesheet" href='css/slots.css' />
   </head>
 
   <body>
 
+    <div id="header">
+      <div class="header_left"></div>
+      <div class="header_mid">
+        <div id="pagetitle">Tabata Roulette</div>
+
+      </div>
+      <div class="header_right">
+        <div id="headericons">
+          <img id="resetbutton" src="images/reset_white.jpg">
+          <img id="infobutton" src="images/info_white.png">
+          <img id="configbutton" src="images/config_white.png">
+        </div>
+
+
+      </div>
+      
+     
+    </div>
+
+    <div id="screen_config">
+      <div id="config_content">
+        <h2>Configuration</h2>
+       
+
+
+        <!-- config form -->
+        <div class="formrow">
+          <div class="col-50">
+            <label for="input_warm_up_time">Warm-up time</label>
+          </div>
+          <div class="col-50">
+            <input type="text" name="input_warm_up_time" id="input_warm_up_time" placeholder="Warm-up time">
+          </div>
+        </div>
+
+        <div class="formrow">
+          <div class="col-50">
+            <label for="input_cool_down_time">Cool-down time</label>
+          </div>
+          <div class="col-50">
+            <input type="text" name="input_cool_down_time" id="input_cool_down_time" placeholder="Cool-down time">
+          </div>
+        </div>
+
+        <div class="formrow">
+          <div class="col-50">
+            <label for="input_set_count">Set count</label>
+          </div>
+          <div class="col-50">
+            <input type="text" name="input_set_count" id="input_set_count" placeholder="Set count">
+          </div>
+        </div>
+
+        <div class="formrow">
+          <div class="col-50">
+            <label for="input_set_rest_duration">Rest between sets</label>
+          </div>
+          <div class="col-50">
+            <input type="text" name="input_set_rest_duration" id="input_set_rest_duration" placeholder="Rest between sets">
+          </div>
+        </div>
+
+        <div class="formrow">
+          <div class="col-50">
+            <label for="input_reps_count">Reps per exercise</label>
+          </div>
+          <div class="col-50">
+            <input type="text" name="input_reps_count" id="input_reps_count" placeholder="Reps per exercise">
+          </div>
+        </div>
+
+        <div class="formrow">
+          <div class="col-50">
+            <label for="input_rep_duration">Rep Work Time</label>
+          </div>
+          <div class="col-50">
+            <input type="text" name="input_rep_duration" id="input_rep_duration" placeholder="Rep Work Time<">
+          </div>
+        </div>
+
+        <div class="formrow">
+          <div class="col-50">
+            <label for="input_rep_rest_duration">Rest per rep</label>
+          </div>
+          <div class="col-50">
+            <input type="text" name="input_rep_rest_duration" id="input_rep_rest_duration" placeholder="Rest per rep">
+          </div>
+        </div>
+
+        <div class="formrow">
+          <div class="col-50">
+            <label for="input_activity_rest_duration">Rest between activities</label>
+          </div>
+          <div class="col-50">
+            <input type="text" name="input_activity_rest_duration" id="input_activity_rest_duration" placeholder="Rest between activities">
+          </div>
+        </div>  
+        
+        
+        <div id="div_total_time">div_total_time</div>
+        <input type="button" value="Done">
+        
+
+      </div>
+    </div>
+
+
     <div id="screen_selection">
 
-      <div id="pagetitle">Tabata Roulette</div>
+
 
       <div id="slots1" class="slots_container">
         <div class="slots_overlay"></div>
       </div>
 
-      <div id="exercise_list"></div>
-      <input type="button" id="spinbutton" value="Spin">
-      <input type="button" id="startbutton" value="Start">
-      <div id="div_total_time">div_total_time</div>
-      <div id="div_remaining_time">div_remaining_time</div>
+     
     </div>
 
-    <div id="screen_config">
-      warm_up_time:<input type="text" name="input_warm_up_time" id="input_warm_up_time"><br>
-      cool_down_time:<input type="text" name="input_cool_down_time" id="input_cool_down_time"><br>
-      set_count:<input type="text" name="input_set_count" id="input_set_count"><br>
-      set_rest_duration:<input type="text" name="input_set_rest_duration" id="input_set_rest_duration"><br>
-      reps_count:<input type="text" name="input_reps_count" id="input_reps_count"><br>
-      rep_duration:<input type="text" name="input_rep_duration" id="input_rep_duration"><br>
-      rep_rest_duration:<input type="text" name="input_rep_rest_duration" id="input_rep_rest_duration"><br>
-      activity_rest_duration:<input type="text" name="input_activity_rest_duration" id="input_activity_rest_duration">
-
-    </div>
+    
     
     <div id="screen_running">
 
@@ -54,10 +148,11 @@
       <div id="div_rep_count">div_rep_count</div>
       <div id="div_activity">div_activity</div>
       <div id="div_countdown">div_countdown</div>
-
+      <div id="div_remaining_time">div_remaining_time</div>
       <br><br>
+      <div id="exercise_list"></div>
       
-      <input type="button" id="pausebutton" value="Pause">
+     
 
 
   
@@ -65,7 +160,13 @@
     </div>
     
 
+    <div id="screen_footer">
+      <div class="midcontent">
 
+        <input type="button" id="spinbutton" value="Spin">
+        <input type="button" id="startbutton" value="Start">
+      </div>
+    </div>
 
 
 

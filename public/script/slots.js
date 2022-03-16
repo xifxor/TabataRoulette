@@ -41,12 +41,22 @@ function SlotGroup(element, slotcount)
         //append the div to the container        
         $(divSlot).appendTo( $(_this.element) );
 
+
         //create the slot
         max = 25 + (index * 10);
         _this.slots.push( new Slot(divSlot, index, activityList, max, 2) );
 
     });
     
+    //set slot width
+    let totalSlotBorderWidth = parseInt($('.slot').css("border-left-width")) + parseInt($('.slot').css("border-right-width"));
+    let availableWidth = $(_this.element).width() - (totalSlotBorderWidth * slotcount);
+    let slotwidth = (availableWidth / slotcount);
+
+    console.log("Setting slot with to " + slotwidth);
+    $('.slot').css({width: slotwidth});
+
+
 }
 
 
@@ -354,4 +364,5 @@ Slot.prototype.stop = function() {
        
 
 };
+
 

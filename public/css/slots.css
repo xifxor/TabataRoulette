@@ -1,11 +1,14 @@
-.slots_container{
-    position:relative;
-    height:150px;
-    border:solid 4px black;
-    display:inline-block;
-    overflow-y: hidden;
-    background-color:#e9e5d9;
-  }
+
+
+
+  .slots_container{
+      position:relative;
+      display:block;
+   
+      border:solid 4px black;
+      overflow-y: hidden;
+      background-color:#e9e5d9;
+    }
 
 
   
@@ -18,7 +21,7 @@
     width:100%;
    
     z-index:1;
-    opacity: 1;
+  
     background-image: linear-gradient(
              rgba(0,0,0,0.6),
              rgba(255,255,255,0), 
@@ -29,13 +32,13 @@
              rgba(255,255,255,0), 
              rgba(255,255,255,0.6), 
              rgba(255,255,255,0), 
-             rgba(0,0,0,0.7));
+             rgba(0,0,0,0.7)
+          );
   }
   
   .slot {
     position:relative;
-    float:left;
-    width:150px;
+    display:inline-block;
     height:100%;
     border-right:solid 5px rgb(121, 121, 121);  
 

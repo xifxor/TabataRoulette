@@ -218,6 +218,11 @@ function runActivities(activities) {
 $(document).ready(function(){
 
 
+    //set button and div state
+    $('#startbutton').attr("disabled", true);
+    $('#screen_config').hide(); 
+
+
     //load slots
     var s1 = new SlotGroup("#slots1", 4);
     //***need to wait for s1 to properly load
@@ -234,17 +239,39 @@ $(document).ready(function(){
 
     //change handler
     $("#screen_config input").change(function(){
-        console.log("Input was changed");   5
+        console.log("Input was changed"); 
+
+        config.warm_up_time = parseInt( $('#input_warm_up_time').val() );
+        config.cool_down_time = parseInt( $('#input_cool_down_time').val() );
+        config.set_count  = parseInt( $('#input_set_count').val() );
+        config.set_rest_duration = parseInt( $('#input_set_rest_duration').val() );
+        config.reps_count = parseInt( $('#input_reps_count').val() );
+        config.rep_duration = parseInt( $('#input_rep_duration').val() );
+        config.rep_rest_duration = parseInt( $('#input_rep_rest_duration').val() );
+        config.activity_rest_duration = parseInt( $('#input_activity_rest_duration').val() );
+
+
+        $(divTotalTime).html("total time: " + config.totaltimeHMS());
+
     })
 
+    $('#configbutton').click(function(){
+        $('#screen_config').toggle();     
+    });
 
     $('#spinbutton').click(function(){
         console.log("Spin");
 
         if ($(this).val() == "Spin")
         {
+            //set button and div state
+            $('#startbutton').attr("disabled", true);
+            $('#screen_config').hide(); 
+
             s1.start();
             $(this).val("Stop") ;
+
+
         }else{
             s1.stop();
             $(this).val("Spin");
@@ -257,45 +284,56 @@ $(document).ready(function(){
             config.activities = s1.selectedActivities;
 
             //show total time
-            //** set this when config changes instead
             $(divTotalTime).html("total time: " + config.totaltimeHMS());
+
+            //enable start 
+            $('#startbutton').attr("disabled", false);
         }
 
     });
 
 
     $('#startbutton').click(function(){
-        $('#startbutton').attr("disabled", true);
-        console.log("Start button clicked")
 
-        //$('#screen_selection').addClass('shrink');
-        $('#screen_running').show();
-
-        start =  (new Date()).getTime()
-       
-        a = getActivitiesQueue();
-        runActivities(a);
-
-    });
+        if ($(this).val() == "Start")
+        {
+            console.log("Start button clicked")
 
 
-    $('#pausebutton').click(function(){
 
-        if ($(this).val() == "Pause")
+            //change to pause button
+            $(this).val("Pause") ;
+
+            //disable spin button
+            $('#spinbutton').attr("disabled", true);
+
+            $('#screen_running').show();
+
+            a = getActivitiesQueue();
+            runActivities(a);
+
+        }else if ($(this).val() == "Pause")
         {
             console.log("Pause button clicked")
             pauseFlag = true;
             $(this).val("Continue") 
-        }else{
+
+
+        }else if ($(this).val() == "Continue")
+        {
             console.log("Continue button clicked")
+            
             pauseFlag = false;
             $(this).val("Pause") 
+
+
+
 
         }
 
     });
-
-   
+    
+ 
 
 
 

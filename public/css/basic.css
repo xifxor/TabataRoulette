@@ -31,11 +31,68 @@
 
 
 
+  @media (min-width:320px)  { /* smartphones, iPhone, portrait 480x320 phones */ }
+  @media (min-width:481px)  { /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */ }
+  @media (min-width:641px)  { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ }
+  @media (min-width:961px)  { /* tablet, landscape iPad, lo-res laptops ands desktops */ }
+  @media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ }
+  @media (min-width:1281px) { /* hi-res laptops and desktops */ }
 
-#slots1 {
-  display: inline-block;
-  margin-left: auto;
-  margin-right: auto;
+
+
+#header {
+  display:flex;
+  background-color:rgb(0, 54, 7);
+  color:white;
+  height:5em;
+  line-height:5em;
+  margin-bottom:1em;
+
+}
+
+
+.header_left {
+  display:inline-block;
+  width:25%;
+  height:100%;
+}
+.header_mid {
+  display:inline-block;
+  width:50%;
+  height:100%;
+  
+}
+.header_right {
+  display:inline-block;
+  width:25%;
+  height:100%;
+  text-align:right;
+}
+
+
+
+
+#pagetitle {
+  font-size:3rem;
+  font-family:arial;
+  height:100%;
+  text-align:center;
+  vertical-align: middle;
+    
+
+
+}
+
+#headericons {
+  height:100%;
+  padding:0.5em;
+  margin-right:0.5em;
+}
+
+#headericons img{
+  height:4em;
+  display:inline-block;
+  margin-right:5px;
 
 }
 
@@ -44,7 +101,7 @@
   align-items: center;
 
   border:solid 1px blue;  
-
+  font-family:arial;
 
 }
 
@@ -55,17 +112,65 @@
   
 }
 
+#screen_footer{
+  background-color:black;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  height:7em;
+  width: 100%;
+  text-align: center;
+  padding:5px;
+  font-family:arial;
+
+
+}
+
+
+#screen_footer input[type=button] {
+  font-size:1.5em;
+  
+  height:4em;
+  width:7em;
+}
+
+
 #screen_config {
-  display:block;
+  position: absolute;
+  display:none;
+  top: 6em;
+  left:1em;
+  right:1em;
+  margin-left:3%;
+  margin-right:3%;
+
+  z-index: 10;
+
+  background-color:white;
+  border-radius: 25px;
+  
+}
+
+
+#config_content {
+  overflow-y: scroll;
+  margin:20px;
+    
+  
+  font-family:arial;
+  font-size:2em;
+
+
+}
+
+#slots1 {
+  margin: 0 auto;
+  height: 200px;
+  width:90%;
 
 }
 
 
-#pagetitle {
-
-  font-size:3rem;
-
-}
 
 
 
