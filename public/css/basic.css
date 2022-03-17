@@ -163,6 +163,7 @@
 
 }
 
+
 #slots1 {
   margin: 0 auto;
   height: 200px;
@@ -170,6 +171,17 @@
 
 }
 
+@media (min-width:650px)  { 
+  #slots1 {
+    margin: 0 auto;
+    height: 200px;
+    width:600px;
+  
+  }
+  
+
+
+}
 
 
 

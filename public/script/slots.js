@@ -19,15 +19,20 @@ var imagePath = "images/"
 
 
 
+/************************************************************************
+*
+* Slot GROUP object
+*
+***********************************************************************/
 
-
-function SlotGroup(element, slotcount)
+function SlotGroup(element, slotcount, loadedCallback=null)
 {
     var _this = this;
-    this.element = element;
-    this.slotcount = slotcount;
-    this.slots = [];
-    this.selectedActivities = [];
+    _this.element = element;
+    _this.slotcount = slotcount;
+    _this.slots = [];
+    _this.selectedActivities = [];
+    _this.loadedCallback = loadedCallback;
 
     //configure the container
     $(_this.element).addClass('slots_container');
@@ -44,7 +49,7 @@ function SlotGroup(element, slotcount)
 
         //create the slot
         max = 25 + (index * 10);
-        _this.slots.push( new Slot(divSlot, index, activityList, max, 2) );
+        _this.slots.push( new Slot(divSlot, index, activityList, max, 2, function(x){ _this.slotLoadedCallback(x) } ) );
 
     });
     
@@ -57,7 +62,46 @@ function SlotGroup(element, slotcount)
     $('.slot').css({width: slotwidth});
 
 
+    
+
 }
+
+//this function is called when each slot confirms it has loaded
+SlotGroup.prototype.slotLoadedCallback = function(name) {
+   
+    var _this = this;
+    console.log("Slot " + name + " has loaded");
+
+    //check if all slots are loaded
+    let allSlotsLoaded = _this.slots.every(function(slot){
+         return slot.loaded;  
+    });
+
+    if (allSlotsLoaded)
+    {
+        console.log("All slots are now loaded");
+      
+        if (_this.loadedCallback != null){
+            console.log("Callback function is present");
+
+            //update activities
+            _this.selectedActivities = [];
+
+            _this.slots.forEach((slot, index) => {
+                _this.selectedActivities.push( slot.activity );
+            });
+
+
+             _this.loadedCallback();
+        }else{
+    
+            console.log("No callback function is present")
+        }
+
+    }
+
+
+};
 
 
 SlotGroup.prototype.start = function() {
@@ -93,7 +137,15 @@ SlotGroup.prototype.stop = function() {
 
 
 
-function Slot(element, name, activities, maxspeed, step) {
+
+/************************************************************************
+*
+* Slot object
+*
+***********************************************************************/
+
+
+function Slot(element, name, activities, maxspeed, step, loadedCallback) {
     
     var _this = this;
     _this.element = element; //dom element of the slot
@@ -104,14 +156,18 @@ function Slot(element, name, activities, maxspeed, step) {
     _this.interval = 50;
     _this.intialposition = 0;
     _this.maxSpeed = maxspeed; //max speed this slot can have
-    _this.activities = activities; 
-    _this.loadedimages = 0;
+    _this.activities = activities; //the possible activities
+    _this.loadedimages = 0;  //the count of images that have been loaded
     _this.yoffset = 0; //the hidden amount above the top of the slot container (automatically calculated)
     _this.centerPointWithOffset = 0;
     _this.toppadding = 0; //padding is increased to create scroll effect
     _this.imagetocenteron = 3; //image index to center on
     _this.activity = null; //records the currently selected activity
-    _this.images = [];
+    //_this.images = [];
+    _this.distanceToSelectedImageCenter = 0;
+    _this.loadedCallback = loadedCallback; //loaded callback function
+    _this.loaded = false;
+
 
     console.log("Creating slot " + _this.slotname);
 
@@ -170,6 +226,10 @@ function Slot(element, name, activities, maxspeed, step) {
                     //all iages loaded so run other intialization activities
                     // $(_this.imagesdiv).css({top: -_this.yoffset, left: _this.intialposition.left, position:'absolute'});
                     $(_this.imagesdiv).css({top: _this.yoffset,  position:'absolute'});
+
+                    // run callback
+                    _this.loaded = true;
+                    _this.loadedCallback(_this.slotname);
     
                  }
     
@@ -253,6 +313,52 @@ Slot.prototype.start = function() {
 };
 
 
+/* 
+get the currently selected image
+
+*/
+
+Slot.prototype.getSelectedActivity = function() {
+
+    var _this = this;
+    let cumulativeHeight=0;
+
+    //loop through the images 
+    $(_this.imagesdiv).find("img").each(function(index){
+
+        imageCenterPoint = cumulativeHeight + _this.toppadding + ($(this).height() /2);
+        imageCenterToCenterPointDelta = imageCenterPoint - _this.centerPointWithOffset; //incorrect#
+        cumulativeHeight += $(this).height();
+
+
+        //select the image if it's center line hasnt yet met the container center line
+        //the last one that matches will be the actual selected one
+        if (imageCenterToCenterPointDelta < 0){
+            //we found the selected image.  see which of the activities it relates to 
+            selectedImage = this;
+            console.log("Slot " + _this.slotname + " : selected image found")
+           
+            // should be a better way to do this
+            _this.activities.forEach( (activity, index) => {
+
+                if ( $(selectedImage).attr("src") == activity['fullpath'])
+                {
+                    console.log("Slot " + _this.slotname + ":  selected activity: " + activity['name']);
+                    _this.activity = activity;
+                }
+
+            });
+           
+           _this.distanceToSelectedImageCenter = -imageCenterToCenterPointDelta;
+        }
+
+    });
+
+    return _this.activity;
+
+}
+
+
 Slot.prototype.stop = function() {
 
     var _this = this;
@@ -264,69 +370,16 @@ Slot.prototype.stop = function() {
 
     $(_this.imagesdiv).removeClass("blurdiv");
 
-    //determine the selected image. if the center line has passed then it will be the next in line
-    cumulativeHeight=0;
-    $(_this.imagesdiv).find("img").each(function(index){
+    //get the selected image
+    _this.getSelectedActivity();
 
-        imageCenterPoint = cumulativeHeight + _this.toppadding + ($(this).height() /2);
-        imageCenterToCenterPointDelta = imageCenterPoint - _this.centerPointWithOffset; //incorrect#
-       // distanceToNextImageCenter = 
-        cumulativeHeight += $(this).height();
-        /*
-        console.log("Slot " + _this.slotname + ": index=" + index 
-                            + " imageCenterPoint="  + imageCenterPoint
-                            + " imageCenterToCenterPointDelta="  + imageCenterToCenterPointDelta
-                            + " cumulativeHeight="  + cumulativeHeight
-                            
-                            );*/
-
-        //select the image if it's center line hasnt yet met the container center line
-        //the last one that matches will be the actual selected one
-        if (imageCenterToCenterPointDelta < 0){
-            //we found the selected image.  see which of the activities it relates to 
-            selectedImage = this;
-            console.log("Slot " + _this.slotname + " : selected image found")
-           
-            _this.activities.forEach( (activity, index) => {
-
-                //console.log( "Slot " + _this.slotname + " :Selected image: " + $(selectedImage).attr("src"))
-                //console.log("Slot " + _this.slotname + ": checing activity : " + activity['fullpath']);
-                //if ( $(selectedImage).attr("src") == activity['image'])
-                if ( $(selectedImage).attr("src") == activity['fullpath'])
-                {
-                    console.log("Slot " + _this.slotname + ":  selected activity: " + activity['name']);
-                    _this.activity = activity;
-                }
-
-            });
-           // _this.activity = $(this).attr("src");
-
-
-            distanceToSelectedImage = -imageCenterToCenterPointDelta;
-        }
-
-    });
 
     //if image sizes are all the same then the new padding always comes out to 1 x image height
-    /*
-    console.log("Slot " + _this.slotname 
-        + ": _this.activity=" + _this.activity 
-        + ":  _this.toppadding=" +  _this.toppadding
-        + " distanceToSelectedImage="  + distanceToSelectedImage);
-    */
 
-    /*
-    //change padding by the ditance to selected image
-    _this.toppadding = _this.toppadding  + distanceToSelectedImage;
-    
-    console.log("setting top padding to : "  + _this.toppadding);
-    //_this.toppadding = _this.toppadding
-    $(_this.imagesdiv).css({"padding-top" : _this.toppadding });
-    */
 
     //arrive at the desired padding within a few intervals
 
-    let remainingDistance = distanceToSelectedImage;
+    let remainingDistance = _this.distanceToSelectedImageCenter;
     
     _this.timer = window.setInterval(function() {
         paddingToAdd = Math.floor( remainingDistance/2);

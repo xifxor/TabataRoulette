@@ -223,11 +223,25 @@ $(document).ready(function(){
     $('#screen_config').hide(); 
 
 
+    let x = 5;
     //load slots
-    var s1 = new SlotGroup("#slots1", 4);
-    //***need to wait for s1 to properly load
+    loadedCallback = function (){
+        console.log("Slots load callback");
+        console.log("value of x = " + x);
+       
+        arr = s1.selectedActivities.map( (a) => { return a['name'] }); 
+        console.log("Selected activities: " +  arr.join(", "));
+    
+    }
 
-    //display config
+    var s1 = new SlotGroup("#slots1", 4, loadedCallback);
+    //***need to wait for s1 to properly load
+   
+
+
+
+
+    //update config form values
     $('#input_warm_up_time').val( config.warm_up_time );
     $('#input_cool_down_time').val( config.cool_down_time );
     $('#input_set_count').val( config.set_count );
