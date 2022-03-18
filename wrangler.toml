@@ -5,7 +5,7 @@ account_id = "ed226d52515e5d08d890067fa7c8e956"
 workers_dev = true
 route = "tabataroulette.isnow.online/*"
 compatibility_date = "2022-02-08"
-
+main="./workers-site/index.js"
 
 [site]
 bucket = "./public"
