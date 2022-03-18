@@ -191,6 +191,10 @@ function Slot(element, name, activities, maxspeed, step, loadedCallback) {
 
     //.css({top: centerpoint, width: 100,  position:'absolute'})
 
+    //**load sounds
+    //** load all elements? */
+
+
     //load & append images to images container
     _this.activities.forEach( (activity, index) => {
 
@@ -207,9 +211,9 @@ function Slot(element, name, activities, maxspeed, step, loadedCallback) {
                 {
                     console.log("Slot " + _this.slotname + ": All images loaded.");
     
-                    //calculate y offset
+                    //calculate initial y offset
                     $(_this.imagesdiv).find("img").each(function(index){
-                  
+                        
                         if (index < _this.imagetocenteron ){
                             _this.yoffset -= $(this).height();
                         }
@@ -217,15 +221,26 @@ function Slot(element, name, activities, maxspeed, step, loadedCallback) {
 
                            _this.yoffset +=  ( $(_this.element).parent().height() / 2) - ($(this).height() / 2);
                            _this.activity = activity; //set the currently selected activity
-
+                           //console.log("Slot " + _this.slotname + ": Activity has been set to " + _this.activity['name'])
+                        
                         }
                         //console.log("Slot " + _this.slotname + ": yoffset=" + _this.yoffset);
                        
                     });
 
+                   
+                    //console.log("Slot " + _this.slotname + ": Activity has been set to " + _this.activity['name'])
+
                     //all iages loaded so run other intialization activities
                     // $(_this.imagesdiv).css({top: -_this.yoffset, left: _this.intialposition.left, position:'absolute'});
                     $(_this.imagesdiv).css({top: _this.yoffset,  position:'absolute'});
+                   
+                    //cant get selected activity because the preious change hasnt taken place
+                    //** find activity without offset?
+                    //**dont relay on the div having loaded */
+                    // _this.getSelectedActivity();
+
+                    
 
                     // run callback
                     _this.loaded = true;
@@ -319,8 +334,11 @@ get the currently selected image
 */
 
 Slot.prototype.getSelectedActivity = function() {
-
+    
     var _this = this;
+
+    console.log("Slot " + _this.slotname + " : getting selected activity")
+
     let cumulativeHeight=0;
 
     //loop through the images 
@@ -329,14 +347,14 @@ Slot.prototype.getSelectedActivity = function() {
         imageCenterPoint = cumulativeHeight + _this.toppadding + ($(this).height() /2);
         imageCenterToCenterPointDelta = imageCenterPoint - _this.centerPointWithOffset; //incorrect#
         cumulativeHeight += $(this).height();
-
+        console.log("Slot " + _this.slotname + " : checking image " + index + " imageCenterToCenterPointDelta: " + imageCenterToCenterPointDelta);
 
         //select the image if it's center line hasnt yet met the container center line
         //the last one that matches will be the actual selected one
         if (imageCenterToCenterPointDelta < 0){
             //we found the selected image.  see which of the activities it relates to 
             selectedImage = this;
-            console.log("Slot " + _this.slotname + " : selected image found")
+            console.log("Slot " + _this.slotname + " : selected image found");
            
             // should be a better way to do this
             _this.activities.forEach( (activity, index) => {
@@ -353,6 +371,8 @@ Slot.prototype.getSelectedActivity = function() {
         }
 
     });
+
+    console.log("Slot " + _this.slotname + ": Activity was foun to be " + _this.activity['name'])
 
     return _this.activity;
 

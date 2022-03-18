@@ -98,17 +98,15 @@
 
 #screen_selection{
   display:block;
-  align-items: center;
-
-  border:solid 1px blue;  
+  align-items: center; 
   font-family:arial;
 
 }
 
 #screen_running{
   display:block;
-  border:solid 1px red; 
-  
+  font-family:arial;
+  font-size:2em;
   
 }
 
@@ -184,17 +182,40 @@
 }
 
 
+#exercise_list{
+  font-size:2rem;
+  text-align: center;
 
+}    
+#div_set_count{
+  font-size:4rem;
+  text-align: center;
+}
+
+#div_activity_count{
+  font-size:4rem;
+  text-align: center;
+}
+#div_rep_count{
+  font-size:4rem;
+  text-align: center;
+}
 
 #div_activity {
-  border:solid 1px yellow;
-  font-size:5rem;
+  font-size:9rem;
   text-align: center;
 
 }
 
 #div_countdown {
-  border:solid 1px blue;
-  font-size:5rem;
+  font-size:12rem;
+  text-align: center;
+}
+
+
+
+
+#div_remaining_time{
+  font-size:3rem;
   text-align: center;
 }

@@ -1,0 +1,13 @@
+name = "tabataroulette"
+type = "webpack"
+
+account_id = "ed226d52515e5d08d890067fa7c8e956"
+zone_id = "40b6cf6725d31d88f16a8e728d5500f2"
+workers_dev = true
+route = "tabataroulette.isnow.online/*"
+compatibility_date = "2022-02-08"
+
+
+[site]
+bucket = "./public"
+entry-point = "./workers-site"

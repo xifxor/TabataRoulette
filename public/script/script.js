@@ -60,9 +60,9 @@ function getActivitiesQueue() {
         Activities.push( {
             "count" : config.warm_up_time,
             "activity" :  "Warm up",
-            "set" : "n/a",
-            "rep" : "n/a",
-            "activitycount" : "n/a",
+            "set" : "0",
+            "rep" : "0",
+            "activitycount" : "0",
             "background-color" : "var(--color-warmup)",
             func : function(){ }  //testing
         });
@@ -192,15 +192,15 @@ function runActivities(activities) {
 
             //update divs
             //* can we pass a function in the activities list instead??
-            if ('set' in currentActivity){           $(divSetCount).html("Set: " + currentActivity['set']); } // + " of " + config.set_count
-            if ('activitycount' in currentActivity){ $(divActivityCount).html("Activity: " + currentActivity['activitycount'] ); } // + " of " + config.activities.length
-            if ('rep' in currentActivity){           $(divRepCount).html("Rep: " + currentActivity['rep'] ); } //+ " of " + config.reps_count
+            if ('set' in currentActivity){           $(divSetCount).html("Set " + currentActivity['set'] + " of " + config.set_count ); } // + " of " + config.set_count
+            if ('activitycount' in currentActivity){ $(divActivityCount).html("Activity " + currentActivity['activitycount'] + " of " + config.activities.length ); } // + " of " + config.activities.length
+            if ('rep' in currentActivity){           $(divRepCount).html("Rep  " + currentActivity['rep']  + " of " + config.reps_count ); } //+ " of " + config.reps_count
             
             if ('activity' in currentActivity){      $(divActivity).html(currentActivity['activity']); }
             if ('background-color' in currentActivity){ $("body").css("background-color", currentActivity['background-color']); }
 
             $(divCountdown).html( currentCount );
-            $(divRemainingTime).html( "remaining time: " + secondsToHMS(config.totaltime() - totalelapsed) );
+            $(divRemainingTime).html( "remaining: " + secondsToHMS(config.totaltime() - totalelapsed) );
             
             //increment and deincrement
             currentCount--;
@@ -231,6 +231,14 @@ $(document).ready(function(){
        
         arr = s1.selectedActivities.map( (a) => { return a['name'] }); 
         console.log("Selected activities: " +  arr.join(", "));
+        $("#exercise_list").html( arr.join(" | ") );
+
+        //update config with activities
+        config.activities = s1.selectedActivities;
+
+        //enable start 
+        $('#startbutton').attr("disabled", false);
+
     
     }
 
@@ -287,12 +295,12 @@ $(document).ready(function(){
 
 
         }else{
-            s1.stop();
+            s1.stop();  //stop may need a callback function
             $(this).val("Spin");
            
             //display activities 
-            //arr = s1.selectedActivities.map( (a) => { return a['name'] }); 
-            //$("#exercise_list").html( arr.join("<br>") );
+            arr = s1.selectedActivities.map( (a) => { return a['name'] }); 
+            $("#exercise_list").html( arr.join(" | ") );
 
             //update config with activities
             config.activities = s1.selectedActivities;
