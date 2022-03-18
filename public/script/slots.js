@@ -348,13 +348,13 @@ Slot.prototype.getSelectedActivity = function() {
 
 
             cumulativeHeight += $(this).height();
-            console.log("Slot " + _this.slotname + 
+           /* console.log("Slot " + _this.slotname + 
                         " : index " + index + 
                         " image:" +  $(this).attr("src") + 
                         " y_offset:" + _this.yoffset + 
                         " imageCenterPoint:" + imageCenterPoint + 
                         " centerPointWithOffset:" + _this.centerPointWithOffset  
-                        );
+                        );*/
 
             //select the image if it's center line hasnt yet met the container center line
             //the last one that matches will be the actual selected one
@@ -363,7 +363,7 @@ Slot.prototype.getSelectedActivity = function() {
 
                     //we found the selected image.  see which of the activities it relates to 
                     selectedImage = this;
-                    console.log("Slot " + _this.slotname + " : selected image found");
+                    //console.log("Slot " + _this.slotname + " : selected image found");
 
                     // should be a better way to do this
                     _this.activities.forEach( (activity, index) => {
