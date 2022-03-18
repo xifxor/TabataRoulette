@@ -29,12 +29,7 @@ let config = {
     rep_duration : 20,  //work time per rep
     rep_rest_duration : 10,  //reset between reps
     activity_rest_duration : 0,  //rest between activities
-    activities : [
-        {"name" : "Situps", "image" : "situps.png"},
-        {"name" : "Squats", "image" : "squats1.png"},
-        {"name" : "Pushups", "image" : "pushup1.png"},
-        {"name" : "Lunge", "image" : "lunge1.png"}
-    ],
+    activities : [ ],
     totaltime : function(){
 
         time_per_activity = (this.rep_duration + this.rep_rest_duration) * this.reps_count; //time taken for each activity
@@ -54,7 +49,7 @@ let config = {
 
 
 
-function getActivitiesQueue() { //you can only use `await` in async funcions 
+function getActivitiesQueue() { 
 
     console.log("Running getActivitiesQueue()");
 
@@ -65,10 +60,11 @@ function getActivitiesQueue() { //you can only use `await` in async funcions
         Activities.push( {
             "count" : config.warm_up_time,
             "activity" :  "Warm up",
-            "set" : "n/a",
-            "rep" : "n/a",
-            "activitycount" : "n/a",
-            "background-color" : "var(--color-warmup)"
+            "set" : "0",
+            "rep" : "0",
+            "activitycount" : "0",
+            "background-color" : "var(--color-warmup)",
+            func : function(){ }  //testing
         });
     }
 
@@ -195,15 +191,16 @@ function runActivities(activities) {
             }       
 
             //update divs
-            if ('set' in currentActivity){           $(divSetCount).html("Set: " + currentActivity['set']); } // + " of " + config.set_count
-            if ('activitycount' in currentActivity){ $(divActivityCount).html("Activity: " + currentActivity['activitycount'] ); } // + " of " + config.activities.length
-            if ('rep' in currentActivity){           $(divRepCount).html("Rep: " + currentActivity['rep'] ); } //+ " of " + config.reps_count
+            //* can we pass a function in the activities list instead??
+            if ('set' in currentActivity){           $(divSetCount).html("Set " + currentActivity['set'] + " of " + config.set_count ); } // + " of " + config.set_count
+            if ('activitycount' in currentActivity){ $(divActivityCount).html("Activity " + currentActivity['activitycount'] + " of " + config.activities.length ); } // + " of " + config.activities.length
+            if ('rep' in currentActivity){           $(divRepCount).html("Rep  " + currentActivity['rep']  + " of " + config.reps_count ); } //+ " of " + config.reps_count
             
             if ('activity' in currentActivity){      $(divActivity).html(currentActivity['activity']); }
             if ('background-color' in currentActivity){ $("body").css("background-color", currentActivity['background-color']); }
 
             $(divCountdown).html( currentCount );
-            $(divRemainingTime).html( "remaining time: " + secondsToHMS(config.totaltime() - totalelapsed) );
+            $(divRemainingTime).html( "remaining: " + secondsToHMS(config.totaltime() - totalelapsed) );
             
             //increment and deincrement
             currentCount--;
@@ -220,35 +217,145 @@ function runActivities(activities) {
 
 $(document).ready(function(){
 
-    $('#startbutton').click(function(){
-        $('#startbutton').attr("disabled", true);
-        console.log("Start button clicked")
-        
-        start =  (new Date()).getTime()
-       
-        a = getActivitiesQueue();
-        runActivities(a);
 
+    //set button and div state
+    $('#startbutton').attr("disabled", true);
+    $('#screen_config').hide(); 
+
+
+    let x = 5;
+    //load slots
+    loadedCallback = function (){
+        console.log("Slots load callback");
+        console.log("value of x = " + x);
+       
+        arr = s1.selectedActivities.map( (a) => { return a['name'] }); 
+        console.log("Selected activities: " +  arr.join(", "));
+        $("#exercise_list").html( arr.join(" | ") );
+
+        //update config with activities
+        config.activities = s1.selectedActivities;
+
+        //enable start 
+        $('#startbutton').attr("disabled", false);
+
+    
+    }
+
+    var s1 = new SlotGroup("#slots1", 4, loadedCallback);
+    //***need to wait for s1 to properly load
+   
+
+
+
+
+    //update config form values
+    $('#input_warm_up_time').val( config.warm_up_time );
+    $('#input_cool_down_time').val( config.cool_down_time );
+    $('#input_set_count').val( config.set_count );
+    $('#input_set_rest_duration').val( config.set_rest_duration );
+    $('#input_reps_count').val( config.reps_count );
+    $('#input_rep_duration').val( config.rep_duration );
+    $('#input_rep_rest_duration').val( config.rep_rest_duration );
+    $('#input_activity_rest_duration').val( config.activity_rest_duration );
+
+    //change handler
+    $("#screen_config input").change(function(){
+        console.log("Input was changed"); 
+
+        config.warm_up_time = parseInt( $('#input_warm_up_time').val() );
+        config.cool_down_time = parseInt( $('#input_cool_down_time').val() );
+        config.set_count  = parseInt( $('#input_set_count').val() );
+        config.set_rest_duration = parseInt( $('#input_set_rest_duration').val() );
+        config.reps_count = parseInt( $('#input_reps_count').val() );
+        config.rep_duration = parseInt( $('#input_rep_duration').val() );
+        config.rep_rest_duration = parseInt( $('#input_rep_rest_duration').val() );
+        config.activity_rest_duration = parseInt( $('#input_activity_rest_duration').val() );
+
+
+        $(divTotalTime).html("total time: " + config.totaltimeHMS());
+
+    })
+
+    $('#configbutton').click(function(){
+        $('#screen_config').toggle();     
     });
 
+    $('#spinbutton').click(function(){
+        console.log("Spin");
 
-    $('#pausebutton').click(function(){
-
-        if ($(this).val() == "Pause")
+        if ($(this).val() == "Spin")
         {
-            console.log("Pause button clicked")
-            pauseFlag = true;
-            $(this).val("Continue") 
-        }else{
-            console.log("Continue button clicked")
-            pauseFlag = false;
-            $(this).val("Pause") 
+            //set button and div state
+            $('#startbutton').attr("disabled", true);
+            $('#screen_config').hide(); 
 
+            s1.start();
+            $(this).val("Stop") ;
+
+
+        }else{
+            s1.stop();  //stop may need a callback function
+            $(this).val("Spin");
+           
+            //display activities 
+            arr = s1.selectedActivities.map( (a) => { return a['name'] }); 
+            $("#exercise_list").html( arr.join(" | ") );
+
+            //update config with activities
+            config.activities = s1.selectedActivities;
+
+            //show total time
+            $(divTotalTime).html("total time: " + config.totaltimeHMS());
+
+            //enable start 
+            $('#startbutton').attr("disabled", false);
         }
 
     });
 
-    $(divTotalTime).html("total time: " + config.totaltimeHMS());
+
+    $('#startbutton').click(function(){
+
+        if ($(this).val() == "Start")
+        {
+            console.log("Start button clicked")
+
+
+
+            //change to pause button
+            $(this).val("Pause") ;
+
+            //disable spin button
+            $('#spinbutton').attr("disabled", true);
+
+            $('#screen_running').show();
+
+            a = getActivitiesQueue();
+            runActivities(a);
+
+        }else if ($(this).val() == "Pause")
+        {
+            console.log("Pause button clicked")
+            pauseFlag = true;
+            $(this).val("Continue") 
+
+
+        }else if ($(this).val() == "Continue")
+        {
+            console.log("Continue button clicked")
+            
+            pauseFlag = false;
+            $(this).val("Pause") 
+
+
+
+
+        }
+
+    });
+    
+ 
 
 
 

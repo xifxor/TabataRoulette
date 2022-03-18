@@ -12,7 +12,8 @@
   "dependencies": {
     "express": "^4.17.1",
     "path": "^0.12.7",
-    "pug": "^2.0.4"
+    "pug": "^2.0.4",
+    "wrangler": "0.0.19"
   },
   "devDependencies": {
     "browser-sync": "^2.26.7",
