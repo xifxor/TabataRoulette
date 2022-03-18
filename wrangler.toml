@@ -1,13 +1,24 @@
 name = "tabataroulette"
-type = "webpack"
 
-account_id = "ed226d52515e5d08d890067fa7c8e956"
-zone_id = "40b6cf6725d31d88f16a8e728d5500f2"
 workers_dev = true
-route = "tabataroulette.isnow.online/*"
+account_id = "ed226d52515e5d08d890067fa7c8e956"
+
+
 compatibility_date = "2022-02-08"
 
 
-[site]
+[env.development]
+name = "tabataroulette-dev"
+route = "*"
+ip="127.0.0.1"
+port=8787
+local_protocol="http"
+upstream_protocol="https"
+entry-point = "./workers-site/index.js"
+
+
+[env.production]
+name = "tabataroulette"
+route = "tabataroulette.isnow.online/*"
 bucket = "./public"
 entry-point = "./workers-site"

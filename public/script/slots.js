@@ -235,10 +235,13 @@ function Slot(element, name, activities, maxspeed, step, loadedCallback) {
                     // $(_this.imagesdiv).css({top: -_this.yoffset, left: _this.intialposition.left, position:'absolute'});
                     $(_this.imagesdiv).css({top: _this.yoffset,  position:'absolute'});
                    
-                    //cant get selected activity because the preious change hasnt taken place
-                    //** find activity without offset?
-                    //**dont relay on the div having loaded */
-                    // _this.getSelectedActivity();
+
+                    //record container center point
+                    //this is the distance from the top of the images div to the center of the visible slots container
+                    _this.centerPointWithOffset = -_this.yoffset + ($(_this.element).parent().height() / 2 );
+
+                    //get the selected activity
+                     _this.getSelectedActivity();
 
                     
 
@@ -266,11 +269,6 @@ Slot.prototype.start = function() {
 
     //reset speed
     _this.speed = 0;
-
-    //record container center point
-    _this.centerPointWithOffset = -_this.yoffset + ($(_this.element).parent().height() / 2 );
-
-   
 
     //increase the top padding until there is enough space for the bottom image(s)
     _this.timer = window.setInterval(function() {
@@ -339,36 +337,52 @@ Slot.prototype.getSelectedActivity = function() {
 
     console.log("Slot " + _this.slotname + " : getting selected activity")
 
-    let cumulativeHeight=0;
+    let cumulativeHeight = _this.toppadding;
+    let selectedImage = null;
 
     //loop through the images 
     $(_this.imagesdiv).find("img").each(function(index){
 
-        imageCenterPoint = cumulativeHeight + _this.toppadding + ($(this).height() /2);
-        imageCenterToCenterPointDelta = imageCenterPoint - _this.centerPointWithOffset; //incorrect#
-        cumulativeHeight += $(this).height();
-        console.log("Slot " + _this.slotname + " : checking image " + index + " imageCenterToCenterPointDelta: " + imageCenterToCenterPointDelta);
+            //calculate the distance from the top of the images div, to the center point of this image
+            imageCenterPoint = cumulativeHeight  + ($(this).height() /2);
 
-        //select the image if it's center line hasnt yet met the container center line
-        //the last one that matches will be the actual selected one
-        if (imageCenterToCenterPointDelta < 0){
-            //we found the selected image.  see which of the activities it relates to 
-            selectedImage = this;
-            console.log("Slot " + _this.slotname + " : selected image found");
-           
-            // should be a better way to do this
-            _this.activities.forEach( (activity, index) => {
 
-                if ( $(selectedImage).attr("src") == activity['fullpath'])
-                {
-                    console.log("Slot " + _this.slotname + ":  selected activity: " + activity['name']);
-                    _this.activity = activity;
+            cumulativeHeight += $(this).height();
+            console.log("Slot " + _this.slotname + 
+                        " : index " + index + 
+                        " image:" +  $(this).attr("src") + 
+                        " y_offset:" + _this.yoffset + 
+                        " imageCenterPoint:" + imageCenterPoint + 
+                        " centerPointWithOffset:" + _this.centerPointWithOffset  
+                        );
+
+            //select the image if it's center line hasnt yet met the container center line
+            //the last one that matches will be the actual selected one
+             if (imageCenterPoint >=_this.centerPointWithOffset){  
+                if (selectedImage == null){
+
+                    //we found the selected image.  see which of the activities it relates to 
+                    selectedImage = this;
+                    console.log("Slot " + _this.slotname + " : selected image found");
+
+                    // should be a better way to do this
+                    _this.activities.forEach( (activity, index) => {
+
+                        if ( $(selectedImage).attr("src") == activity['fullpath'])
+                        {
+                            console.log("Slot " + _this.slotname + ":  selected activity: " + activity['name']);
+                            _this.activity = activity;
+                        }
+
+                    });
+
+                    _this.distanceToSelectedImageCenter = -(imageCenterPoint - _this.centerPointWithOffset);
+
                 }
 
-            });
+            }
            
-           _this.distanceToSelectedImageCenter = -imageCenterToCenterPointDelta;
-        }
+        
 
     });
 
