@@ -133,7 +133,17 @@
 }
 
 
+#screen_info {
+  display:none;
+}
+
+
 #screen_config {
+  display:none;
+}
+
+.infobox {
+
   position: absolute;
   display:none;
   top: 6em;
@@ -148,9 +158,7 @@
   border-radius: 25px;
   
 }
-
-
-#config_content {
+.infobox_content {
   overflow-y: scroll;
   margin:20px;
     

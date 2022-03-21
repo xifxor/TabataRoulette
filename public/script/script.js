@@ -173,8 +173,7 @@ function runActivities(activities) {
 
             //if the current count is 0 then pick up the next activity to process
             if (currentCount <= 0){
-                console.log("Picking up new activity");
-
+            
                 //if there are more activities then pick up the next one
                 if (activities.length > 0){
                     currentActivity = activities.shift();
@@ -214,6 +213,32 @@ function runActivities(activities) {
 
 }
 
+// Restricts input for the set of matched elements to the given inputFilter function.
+(function($) {
+    $.fn.inputFilter = function(inputFilter) {
+      return this.on("input keydown keyup mousedown mouseup select contextmenu drop", function() {
+        if (inputFilter(this.value)) {
+          this.oldValue = this.value;
+          this.oldSelectionStart = this.selectionStart;
+          this.oldSelectionEnd = this.selectionEnd;
+        } else if (this.hasOwnProperty("oldValue")) {
+          this.value = this.oldValue;
+          this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+        } else {
+          this.value = "";
+        }
+      });
+    };
+  }(jQuery));
+
+
+  $(document).ready(function() {
+    $("#myTextBox").inputFilter(function(value) {
+      return /^\d*$/.test(value);    // Allow digits only, using a RegExp
+    });
+  });
+
+
 
 $(document).ready(function(){
 
@@ -238,6 +263,9 @@ $(document).ready(function(){
 
         //enable start 
         $('#startbutton').attr("disabled", false);
+
+        //set total time
+        $(divTotalTime).html("total time: " + config.totaltimeHMS());
 
     
     }
@@ -280,6 +308,11 @@ $(document).ready(function(){
     $('#configbutton').click(function(){
         $('#screen_config').toggle();     
     });
+
+    $('#infobutton').click(function(){
+        $('#screen_info').toggle();     
+    });
+
 
     $('#spinbutton').click(function(){
         console.log("Spin");
@@ -354,6 +387,22 @@ $(document).ready(function(){
         }
 
     });
+
+
+    //reset 
+    $('#resetbutton').click(function(){
+        console.log("Reset button clicked");
+        if (confirm("Are you sure you want to reset? (This will stop any current session)") == true)
+        {
+            console.log("Resetting session");
+            $('#startbutton').attr("disabled", false);
+            $('#screen_config').hide(); 
+            s1.stop();
+
+        }
+
+    });
+    
     
  
 

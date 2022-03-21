@@ -1,2 +1,5 @@
 node_modules
 worker
+
+#private files
+_*
