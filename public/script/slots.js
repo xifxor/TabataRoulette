@@ -58,7 +58,7 @@ function SlotGroup(element, slotcount, loadedCallback=null)
     let availableWidth = $(_this.element).width() - (totalSlotBorderWidth * slotcount);
     let slotwidth = (availableWidth / slotcount);
 
-    console.log("Setting slot with to " + slotwidth);
+    console.log("Setting slot width to " + slotwidth);
     $('.slot').css({width: slotwidth});
 
 
