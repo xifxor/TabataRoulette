@@ -8,138 +8,109 @@ const divSetCount = "#div_set_count";
 const divRepCount = "#div_rep_count";
 const divActivityCount = "#div_activity_count";
 
-let pauseFlag = false; //pause the current interval
-let skipFlag = false; //skip the current interval
-
-
-function secondsToHMS(seconds) {
-    var convert = function(x) { return (x < 10) ? "0"+x : x; }
-    return convert(parseInt(seconds / (60*60))) + ":" +
-           convert(parseInt(seconds / 60 % 60)) + ":" +
-           convert(seconds % 60)
-  }
-
 let config = {
-
     warm_up_time : 10,  //starting warm up
     cool_down_time : 10, //final cool down
-    set_count : 1,
+    set_count : 1, //number of sets
     set_rest_duration : 5, //rest between sets
     reps_count : 8, //number of reps per activity in a set
     rep_duration : 20,  //work time per rep
     rep_rest_duration : 10,  //reset between reps
-    activity_rest_duration : 0,  //rest between activities
-    activities : [ ],
-    totaltime : function(){
-
-        time_per_activity = (this.rep_duration + this.rep_rest_duration) * this.reps_count; //time taken for each activity
-        time_per_set = (time_per_activity * this.activities.length) + (this.activity_rest_duration * (this.activities.length -1)); //time for a full set of activities which includes the rest between
-        time_for_all_sets = (time_per_set * this.set_count) + (this.set_rest_duration * (this.set_count - 1)); //time taken for all sets including rest between
-        total_time = this.warm_up_time + time_for_all_sets + this.cool_down_time;
-
-        return total_time;
-    },
-    totaltimeHMS : function(){
-
-        return secondsToHMS( this.totaltime() );
-    }
-
+    activity_rest_duration : 0,  //rest between activities  
 }
 
 
 
+function getActivityQueue(){
+    console.log("Running activityqueue()");
 
-function getActivitiesQueue() { 
+    let queue = new Array();
 
-    console.log("Running getActivitiesQueue()");
-
-    let Activities = new Array();
-  
     //run warm up interval
     if (config.warm_up_time > 0){
-        Activities.push( {
-            "count" : config.warm_up_time,
-            "activity" :  "Warm up",
-            "set" : "0",
-            "rep" : "0",
-            "activitycount" : "0",
-            "background-color" : "var(--color-warmup)",
-            func : function(){ }  //testing
-        });
+    queue.push( {
+        "count" : config.warm_up_time,
+        "name" :  "Warm up",
+        "set" : "0",
+        "rep" : "0",
+        "activitycount" : "0",
+        "background-color" : "var(--color-warmup)",
+        func : function(){ }  //testing
+    });
     }
 
     //loop sets
     [...Array(config.set_count)].forEach((_, set) => {
-        setDisplayNumber = set + 1;
-        activityCount = 0;
+    setDisplayNumber = set + 1;
+    activityCount = 0;
 
 
-        //loop activities
-        config.activities.forEach((activity) => {
-            activityCount++;
+    //loop activities
+    config.activities.forEach((activity) => {
+        activityCount++;
 
-            //reps loop
-            [...Array(config.reps_count)].forEach((_, rep) => {
-                repDisplayNumber = rep +1;
+        //reps loop
+        [...Array(config.reps_count)].forEach((_, rep) => {
+            repDisplayNumber = rep +1;
 
-                //queue work interval
-                Activities.push( 
-                    {"count" : config.rep_duration,
-                    "activity" : activity.name,
-                    "set" : setDisplayNumber,
-                    "rep" : repDisplayNumber,
-                    "activitycount" : activityCount,
-                    "background-color" : "var(--color-work)"
-                });
-
-                //queue rest interval
-                Activities.push( 
-                    {"count" : config.rep_rest_duration,
-                    "activity" : "Rest",
-                    "set" : setDisplayNumber,
-                    "rep" : repDisplayNumber,
-                    "activitycount" : activityCount,
-                    "background-color" : "var(--color-rest)"
-                });
-
-            }); //end of reps loop for this activity
-
-            //add reset between activities
-            if (config.activity_rest_duration > 0){
-
-                Activities.push( 
-                    {"count" : config.activity_rest_duration,
-                    "activity" : "Rest before next activity",
-                    "set" : setDisplayNumber,
-                    "rep" : repDisplayNumber,
-                    "activitycount" : activityCount,
-                    "background-color" : "var(--color-activityrest)"
-                });
-
-            }
-
-        }); //end of activities loop
-
-        //add reset between sets
-        if (config.set_rest_duration > 0 && config.set_count > 1){
-            Activities.push( 
-                {"count" : config.set_rest_duration,
-                "activity" : "Rest before next set",
+            //queue work interval
+            queue.push( 
+                {"count" : config.rep_duration,
+                "name" : activity.name,
                 "set" : setDisplayNumber,
                 "rep" : repDisplayNumber,
                 "activitycount" : activityCount,
-                "background-color" : "var(--color-setrest)"
+                "background-color" : "var(--color-work)"
+            });
+
+            //queue rest interval
+            queue.push( 
+                {"count" : config.rep_rest_duration,
+                "name" : "Rest",
+                "set" : setDisplayNumber,
+                "rep" : repDisplayNumber,
+                "activitycount" : activityCount,
+                "background-color" : "var(--color-rest)"
+            });
+
+        }); //end of reps loop for this activity
+
+        //add reset between activities
+        if (config.activity_rest_duration > 0){
+
+            queue.push( 
+                {"count" : config.activity_rest_duration,
+                "name" : "Rest before next activity",
+                "set" : setDisplayNumber,
+                "rep" : repDisplayNumber,
+                "activitycount" : activityCount,
+                "background-color" : "var(--color-activityrest)"
             });
 
         }
+
+    }); //end of activities loop
+
+    //add reset between sets
+    if (config.set_rest_duration > 0 && config.set_count > 1){
+        queue.push( 
+            {"count" : config.set_rest_duration,
+            "name" : "Rest before next set",
+            "set" : setDisplayNumber,
+            "rep" : repDisplayNumber,
+            "activitycount" : activityCount,
+            "background-color" : "var(--color-setrest)"
+        });
+
+    }
 
     }); //end of sets loop
 
     //run cool down interval
     if (config.cool_down_time > 0){
-        Activities.push( 
+        queue.push( 
             {"count" : config.cool_down_time,
-            "activity" : "Cool down",
+            "name" : "Cool down",
             "set" : setDisplayNumber,
             "rep" : repDisplayNumber,
             "activitycount" : activityCount,
@@ -147,71 +118,15 @@ function getActivitiesQueue() {
         });
     }
 
-    console.log("Collected " + Activities.length + " activities");
+    console.log("Collected " + queue.length + " events");
 
     //return
-    return Activities;
+    return queue;
 
-    
+
 }
 
 
-
-function runActivities(activities) {
-
-    console.log("Running runActivities()");
-    console.log("Activity count: " + activities.length )
-
-    let totalelapsed = 0;
-    let currentCount = 0;
-
-    let counter = setInterval(() => {
-        
-        if (pauseFlag != true)
-        {
-           
-
-            //if the current count is 0 then pick up the next activity to process
-            if (currentCount <= 0){
-            
-                //if there are more activities then pick up the next one
-                if (activities.length > 0){
-                    currentActivity = activities.shift();
-                    currentCount = currentActivity['count'];
-                }
-                //otherwise end the process
-                else{
-                    console.log("No activities remaining");
-                    $('#startbutton').attr("disabled", false);
-                    clearInterval(counter);
-                    return;
-                }
-
-            }       
-
-            //update divs
-            //* can we pass a function in the activities list instead??
-            if ('set' in currentActivity){           $(divSetCount).html("Set " + currentActivity['set'] + " of " + config.set_count ); } // + " of " + config.set_count
-            if ('activitycount' in currentActivity){ $(divActivityCount).html("Activity " + currentActivity['activitycount'] + " of " + config.activities.length ); } // + " of " + config.activities.length
-            if ('rep' in currentActivity){           $(divRepCount).html("Rep  " + currentActivity['rep']  + " of " + config.reps_count ); } //+ " of " + config.reps_count
-            
-            if ('activity' in currentActivity){      $(divActivity).html(currentActivity['activity']); }
-            if ('background-color' in currentActivity){ $("body").css("background-color", currentActivity['background-color']); }
-
-            $(divCountdown).html( currentCount );
-            $(divRemainingTime).html( "remaining: " + secondsToHMS(config.totaltime() - totalelapsed) );
-            
-            //increment and deincrement
-            currentCount--;
-            totalelapsed++;
-
-
-        }
-
-
-    }, 1000);
-
-}
 
 // Restricts input for the set of matched elements to the given inputFilter function.
 (function($) {
@@ -243,18 +158,19 @@ function runActivities(activities) {
 $(document).ready(function(){
 
 
+
     //set button and div state
     $('#startbutton').attr("disabled", true);
     $('#screen_config').hide(); 
 
 
-    let x = 5;
-    //load slots
-    loadedCallback = function (){
+    //slots loaded callback
+    let loadedCallback = function (){
         console.log("Slots load callback");
-        console.log("value of x = " + x);
-       
+
         arr = s1.selectedActivities.map( (a) => { return a['name'] }); 
+        //arr = s1.selectedActivities.map( a => a.name ); 
+
         console.log("Selected activities: " +  arr.join(", "));
         $("#exercise_list").html( arr.join(" | ") );
 
@@ -265,15 +181,48 @@ $(document).ready(function(){
         $('#startbutton').attr("disabled", false);
 
         //set total time
-        $(divTotalTime).html("total time: " + config.totaltimeHMS());
+        $(divTotalTime).html("total time: " + t1.totaltime());
 
     
     }
 
-    var s1 = new SlotGroup("#slots1", 4, loadedCallback);
-    //***need to wait for s1 to properly load
-   
+    //create a new slot group
+    const s1 = new SlotGroup("#slots1", 4, loadedCallback);
 
+    //create a new timer
+    const t1 = Object.create(countdowntimer); 
+    //t1.intervals = activities;
+
+    //timer interval callback
+    t1.oninterval = function(){
+        console.log("oninterval callback");
+
+        currentActivity = t1.currentinterval();
+      /*  $('#div_elapsed_time').html( "elapsed sconds: " + t1.elapsedseconds );
+        $('#div_remaining_time').html( "remaining time: " + t1.remainingtime() );
+
+        $('#div_activity').html(  currentActivity['name'] );
+        
+        $('#div_set_count').html( "set: " + currentActivity['set'] + " of " + config.set_count );
+*/
+        if ('set' in currentActivity){           $(divSetCount).html("Set " + currentActivity['set'] + " of " + config.set_count ); } // + " of " + config.set_count
+        if ('activitycount' in currentActivity){ $(divActivityCount).html("Activity " + currentActivity['activitycount'] + " of " + config.activities.length ); } // + " of " + config.activities.length
+        if ('rep' in currentActivity){           $(divRepCount).html("Rep  " + currentActivity['rep']  + " of " + config.reps_count ); } //+ " of " + config.reps_count
+        if ('name' in currentActivity){      $(divActivity).html(currentActivity['name']); }
+        if ('background-color' in currentActivity){ $("body").css("background-color", currentActivity['background-color']); }
+
+        $(divCountdown).html( t1.currentcount );
+        $(divRemainingTime).html( "remaining: " + t1.remainingtime() );
+      
+
+
+
+    }
+
+    //time complete callback
+    t1.oncomplete = function(){
+        console.log("The timer completed");
+    }
 
 
 
@@ -287,7 +236,7 @@ $(document).ready(function(){
     $('#input_rep_rest_duration').val( config.rep_rest_duration );
     $('#input_activity_rest_duration').val( config.activity_rest_duration );
 
-    //change handler
+    //config change handler
     $("#screen_config input").change(function(){
         console.log("Input was changed"); 
 
@@ -364,8 +313,12 @@ $(document).ready(function(){
 
             $('#screen_running').show();
 
-            a = getActivitiesQueue();
-            runActivities(a);
+            t1.intervals = getActivityQueue();
+
+
+
+            t1.start();
+
 
         }else if ($(this).val() == "Pause")
         {
