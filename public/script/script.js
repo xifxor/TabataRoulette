@@ -168,14 +168,15 @@ $(document).ready(function(){
     let loadedCallback = function (){
         console.log("Slots load callback");
 
-        arr = s1.selectedActivities.map( (a) => { return a['name'] }); 
-        //arr = s1.selectedActivities.map( a => a.name ); 
+        //arr = s1.selectedActivities.map( (a) => { return a['name'] }); 
+        arr = s1.selectedActivities.map( a => a.name ); 
 
         console.log("Selected activities: " +  arr.join(", "));
         $("#exercise_list").html( arr.join(" | ") );
 
         //update config with activities
         config.activities = s1.selectedActivities;
+        t1.intervals = getActivityQueue();
 
         //enable start 
         $('#startbutton').attr("disabled", false);
@@ -198,13 +199,7 @@ $(document).ready(function(){
         console.log("oninterval callback");
 
         currentActivity = t1.currentinterval();
-      /*  $('#div_elapsed_time').html( "elapsed sconds: " + t1.elapsedseconds );
-        $('#div_remaining_time').html( "remaining time: " + t1.remainingtime() );
 
-        $('#div_activity').html(  currentActivity['name'] );
-        
-        $('#div_set_count').html( "set: " + currentActivity['set'] + " of " + config.set_count );
-*/
         if ('set' in currentActivity){           $(divSetCount).html("Set " + currentActivity['set'] + " of " + config.set_count ); } // + " of " + config.set_count
         if ('activitycount' in currentActivity){ $(divActivityCount).html("Activity " + currentActivity['activitycount'] + " of " + config.activities.length ); } // + " of " + config.activities.length
         if ('rep' in currentActivity){           $(divRepCount).html("Rep  " + currentActivity['rep']  + " of " + config.reps_count ); } //+ " of " + config.reps_count
@@ -213,9 +208,6 @@ $(document).ready(function(){
 
         $(divCountdown).html( t1.currentcount );
         $(divRemainingTime).html( "remaining: " + t1.remainingtime() );
-      
-
-
 
     }
 
@@ -286,9 +278,10 @@ $(document).ready(function(){
 
             //update config with activities
             config.activities = s1.selectedActivities;
+            t1.intervals = getActivityQueue();
 
             //show total time
-            $(divTotalTime).html("total time: " + config.totaltimeHMS());
+            $(divTotalTime).html("total time: " + t1.totaltime());
 
             //enable start 
             $('#startbutton').attr("disabled", false);
@@ -303,8 +296,6 @@ $(document).ready(function(){
         {
             console.log("Start button clicked")
 
-
-
             //change to pause button
             $(this).val("Pause") ;
 
@@ -314,16 +305,13 @@ $(document).ready(function(){
             $('#screen_running').show();
 
             t1.intervals = getActivityQueue();
-
-
-
             t1.start();
 
 
         }else if ($(this).val() == "Pause")
         {
             console.log("Pause button clicked")
-            pauseFlag = true;
+            t1.ispaused = true;
             $(this).val("Continue") 
 
 
@@ -331,7 +319,7 @@ $(document).ready(function(){
         {
             console.log("Continue button clicked")
             
-            pauseFlag = false;
+            t1.ispaused = false;
             $(this).val("Pause") 
 
 
@@ -350,7 +338,9 @@ $(document).ready(function(){
             console.log("Resetting session");
             $('#startbutton').attr("disabled", false);
             $('#screen_config').hide(); 
-            s1.stop();
+            t1.reset();
+
+            //reset background color
 
         }
 
