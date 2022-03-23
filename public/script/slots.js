@@ -25,6 +25,14 @@ var imagePath = "images/"
 *
 ***********************************************************************/
 
+let SlotGroupX = {
+
+    onload : function(){}
+
+}
+
+
+
 function SlotGroup(element, slotcount, loadedCallback=null)
 {
     var _this = this;
@@ -144,6 +152,12 @@ SlotGroup.prototype.stop = function() {
 *
 ***********************************************************************/
 
+let SlotX = {
+
+    onload : function(){}
+    
+
+}
 
 function Slot(element, name, activities, maxspeed, step, loadedCallback) {
     
@@ -192,7 +206,7 @@ function Slot(element, name, activities, maxspeed, step, loadedCallback) {
     //.css({top: centerpoint, width: 100,  position:'absolute'})
 
     //**load sounds
-    //** load all elements? */
+    //** load all assets  */
 
 
     //load & append images to images container

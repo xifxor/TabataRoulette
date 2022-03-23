@@ -5,32 +5,32 @@ let countdowntimer = {
     timer : null, //interval object
     skipflag : false, //if this is true then the current activity will be skipped
     elapsedseconds : 0,
-    intervals : [], //interval details 
-    intervalindex : -1, //current interval index
+    actions : [], //individual countdown tasks to run 
+    actionindex : -1, //current action index
     currentcount : 0,
-    currentinterval : function(){
-       return this.intervals[ this.intervalindex ];
+    currentaction : function(){
+       return this.actions[ this.actionindex ];
     },
     oninterval : function(){}, //for callbacks
     oncomplete : function(){}, //for callbacks
     start : function(){
 
-        console.log("Running start()");
-       // console.log("Interval count: " + this.intervals.length )
+        console.log("start()");
+       // console.log("action count: " + this.actions.length )
         
         this.timer = setInterval(() => {
 
             //if the current count is 0 then pick up the next activity to process
             if (this.currentcount <= 0){
             
-                //if there are more intervals then pick up the next one
-                if (this.intervalindex < this.intervals.length-1){
-                    this.intervalindex++;
-                    this.currentcount = (this.currentinterval())['count'];
+                //if there are more actions then pick up the next one
+                if (this.actionindex < this.actions.length-1){
+                    this.actionindex++;
+                    this.currentcount = (this.currentaction())['count'];
                 }
                 //otherwise end the process
                 else{
-                    console.log("No intervals remaining");
+                    console.log("No actions remaining");
                     clearInterval(this.timer); //stop the timer
                     this.oncomplete(); //callback
                     return;
@@ -62,16 +62,16 @@ let countdowntimer = {
                convert(seconds % 60)
       },
 
-    /* get the total time of all intervals */
+    /* get the total time of all actions */
     totalseconds : function(){
        // console.log("Running totalseconds()");
 
-        if ( this.intervals.length > 0){
+        if ( this.actions.length > 0){
 
-            // return this.intervals.map( (item) => { return item.count } ).reduce( (prev, next) => { return prev + next } );
+            // return this.actions.map( (item) => { return item.count } ).reduce( (prev, next) => { return prev + next } );
             
             //shorthand
-            return this.intervals.map(item => item.count ).reduce( (prev, next) => prev + next);
+            return this.actions.map(item => item.count ).reduce( (prev, next) => prev + next);
 
         }else{
             return 0;
@@ -89,11 +89,10 @@ let countdowntimer = {
 
     reset :  function(){
         console.log("Running reset()");
-       
-        this.timer = null;
+        clearInterval(this.timer);
         this.skipflag = false;
         this.elapsedseconds = 0;
-        this.intervalindex = -1;   
+        this.actionindex = -1;   
         this.currentcount = 0;
 
     }
