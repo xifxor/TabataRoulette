@@ -144,26 +144,43 @@ function getActivityQueue(){
         }
       });
     };
-  }(jQuery));
+}(jQuery));
 
-
-  $(document).ready(function() {
-    $("#myTextBox").inputFilter(function(value) {
-      return /^\d*$/.test(value);    // Allow digits only, using a RegExp
-    });
-  });
 
 
 
 $(document).ready(function(){
 
-
-
     //set button and div state
     $('#startbutton').attr("disabled", true);
     $('#screen_config').hide(); 
 
+    //set config filters
+    $("#screen_config input[type=text] ").inputFilter(function(value) {
+        return /^\d*$/.test(value);    // Allow digits only, using a RegExp
+    });
 
+    //config change handler
+    $("#screen_config input").change(function(){
+        console.log("Input was changed"); 
+
+        config.warm_up_time = parseInt( $('#input_warm_up_time').val() );
+        config.cool_down_time = parseInt( $('#input_cool_down_time').val() );
+        config.set_count  = parseInt( $('#input_set_count').val() );
+        config.set_rest_duration = parseInt( $('#input_set_rest_duration').val() );
+        config.reps_count = parseInt( $('#input_reps_count').val() );
+        config.rep_duration = parseInt( $('#input_rep_duration').val() );
+        config.rep_rest_duration = parseInt( $('#input_rep_rest_duration').val() );
+        config.activity_rest_duration = parseInt( $('#input_activity_rest_duration').val() );
+
+        config.activities = s1.selectedActivities;
+        t1.actions = getActivityQueue();
+
+        $(divTotalTime).html("total time: " + t1.totaltime());
+
+    })
+
+    
     //slots loaded callback
     let loadedCallback = function (){
         console.log("Slots load callback");
@@ -176,7 +193,7 @@ $(document).ready(function(){
 
         //update config with activities
         config.activities = s1.selectedActivities;
-        t1.intervals = getActivityQueue();
+        t1.actions = getActivityQueue();
 
         //enable start 
         $('#startbutton').attr("disabled", false);
@@ -192,18 +209,17 @@ $(document).ready(function(){
 
     //create a new timer
     const t1 = Object.create(countdowntimer); 
-    //t1.intervals = activities;
 
     //timer interval callback
     t1.oninterval = function(){
         console.log("oninterval callback");
 
-        currentActivity = t1.currentinterval();
+        currentActivity = t1.currentaction();
 
         if ('set' in currentActivity){           $(divSetCount).html("Set " + currentActivity['set'] + " of " + config.set_count ); } // + " of " + config.set_count
         if ('activitycount' in currentActivity){ $(divActivityCount).html("Activity " + currentActivity['activitycount'] + " of " + config.activities.length ); } // + " of " + config.activities.length
         if ('rep' in currentActivity){           $(divRepCount).html("Rep  " + currentActivity['rep']  + " of " + config.reps_count ); } //+ " of " + config.reps_count
-        if ('name' in currentActivity){      $(divActivity).html(currentActivity['name']); }
+        if ('name' in currentActivity){          $(divActivity).html(currentActivity['name']); }
         if ('background-color' in currentActivity){ $("body").css("background-color", currentActivity['background-color']); }
 
         $(divCountdown).html( t1.currentcount );
@@ -228,27 +244,7 @@ $(document).ready(function(){
     $('#input_rep_rest_duration').val( config.rep_rest_duration );
     $('#input_activity_rest_duration').val( config.activity_rest_duration );
 
-    //config change handler
-    $("#screen_config input").change(function(){
-        console.log("Input was changed"); 
 
-        config.warm_up_time = parseInt( $('#input_warm_up_time').val() );
-        config.cool_down_time = parseInt( $('#input_cool_down_time').val() );
-        config.set_count  = parseInt( $('#input_set_count').val() );
-        config.set_rest_duration = parseInt( $('#input_set_rest_duration').val() );
-        config.reps_count = parseInt( $('#input_reps_count').val() );
-        config.rep_duration = parseInt( $('#input_rep_duration').val() );
-        config.rep_rest_duration = parseInt( $('#input_rep_rest_duration').val() );
-        config.activity_rest_duration = parseInt( $('#input_activity_rest_duration').val() );
-
-
-        $(divTotalTime).html("total time: " + config.totaltimeHMS());
-
-    })
-
-    $('#configbutton').click(function(){
-        $('#screen_config').toggle();     
-    });
 
     $('#infobutton').click(function(){
         $('#screen_info').toggle();     
@@ -278,7 +274,7 @@ $(document).ready(function(){
 
             //update config with activities
             config.activities = s1.selectedActivities;
-            t1.intervals = getActivityQueue();
+            t1.actions = getActivityQueue();
 
             //show total time
             $(divTotalTime).html("total time: " + t1.totaltime());
@@ -296,30 +292,30 @@ $(document).ready(function(){
         {
             console.log("Start button clicked")
 
-            //change to pause button
+            //reconfigure butons and screens
             $(this).val("Pause") ;
-
-            //disable spin button
             $('#spinbutton').attr("disabled", true);
-
+            $('#screen_config').hide(); 
             $('#screen_running').show();
 
-            t1.intervals = getActivityQueue();
+            //create activities queue and start
+            t1.actions = getActivityQueue();
             t1.start();
 
 
         }else if ($(this).val() == "Pause")
         {
             console.log("Pause button clicked")
-            t1.ispaused = true;
+            t1.pause();
             $(this).val("Continue") 
 
 
         }else if ($(this).val() == "Continue")
         {
             console.log("Continue button clicked")
-            
-            t1.ispaused = false;
+
+            $('#screen_config').hide(); 
+            t1.start();
             $(this).val("Pause") 
 
 
@@ -329,22 +325,40 @@ $(document).ready(function(){
 
     });
 
-
     //reset 
     $('#resetbutton').click(function(){
         console.log("Reset button clicked");
         if (confirm("Are you sure you want to reset? (This will stop any current session)") == true)
         {
             console.log("Resetting session");
-            $('#startbutton').attr("disabled", false);
+            $('#startbutton').attr("disabled", false).val("Start");
+            $('#spinbutton').attr("disabled", false);
             $('#screen_config').hide(); 
             t1.reset();
 
             //reset background color
+            $("body").css("background-color", "var(--color-background)")
 
+            $('#div_set_count, #div_activity_count, #div_rep_count, #div_activity,#div_countdown,#div_remaining_time').html(""); 
+      
+      
+      
         }
 
     });
+
+
+    
+    $('#configbutton').click(function(){
+        $('#screen_config').toggle();     
+    });
+
+
+    //config done
+    $('#configdonebutton').click(function(){
+        $('#screen_config').hide();     
+    }); 
+    
     
     
  

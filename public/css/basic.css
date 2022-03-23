@@ -30,16 +30,6 @@
   }
 
 
-
-  @media (min-width:320px)  { /* smartphones, iPhone, portrait 480x320 phones */ }
-  @media (min-width:481px)  { /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */ }
-  @media (min-width:641px)  { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ }
-  @media (min-width:961px)  { /* tablet, landscape iPad, lo-res laptops ands desktops */ }
-  @media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ }
-  @media (min-width:1281px) { /* hi-res laptops and desktops */ }
-
-
-
 #header {
   display:flex;
   background-color:rgb(0, 54, 7);
@@ -142,6 +132,15 @@
   display:none;
 }
 
+
+#screen_config input[type=button] {
+  font-size:1em;
+  
+  height:3em;
+  width:7em;
+}
+
+
 .infobox {
 
   position: absolute;
@@ -149,6 +148,7 @@
   top: 6em;
   left:1em;
   right:1em;
+  height:80%;
   margin-left:3%;
   margin-right:3%;
 
@@ -159,12 +159,12 @@
   
 }
 .infobox_content {
+  position:relative;
   overflow-y: scroll;
   margin:20px;
-    
-  
+  height:95%;
   font-family:arial;
-  font-size:2em;
+  font-size:1.5em;
 
 
 }
@@ -179,8 +179,8 @@
 
 @media (min-width:650px)  { 
   #slots1 {
-    margin: 0 auto;
-    height: 200px;
+    margin:0 auto;
+    height:200px;
     width:600px;
   
   }
@@ -189,34 +189,44 @@
 
 }
 
+.centered{
+  text-align: center;
+}
 
+
+
+#div_total_time{
+  margin-top:1em;
+  text-align: center;
+  font-size:2rem;
+}
 #exercise_list{
   font-size:2rem;
   text-align: center;
 
 }    
 #div_set_count{
-  font-size:4rem;
+  font-size:2rem;
   text-align: center;
 }
 
 #div_activity_count{
-  font-size:4rem;
+  font-size:2rem;
   text-align: center;
 }
 #div_rep_count{
-  font-size:4rem;
+  font-size:2rem;
   text-align: center;
 }
 
 #div_activity {
-  font-size:9rem;
+  font-size:6rem;
   text-align: center;
 
 }
 
 #div_countdown {
-  font-size:12rem;
+  font-size:7rem;
   text-align: center;
 }
 
