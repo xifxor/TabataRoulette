@@ -3,7 +3,6 @@
 let countdowntimer = {
 
     timer : null, //interval object
-    ispaused : false,
     skipflag : false, //if this is true then the current activity will be skipped
     elapsedseconds : 0,
     intervals : [], //interval details 
@@ -20,39 +19,39 @@ let countdowntimer = {
        // console.log("Interval count: " + this.intervals.length )
         
         this.timer = setInterval(() => {
-            
-            if (this.ispaused != true)
-            {
-               
-                //if the current count is 0 then pick up the next activity to process
-                if (this.currentcount <= 0){
-                
-                    //if there are more intervals then pick up the next one
-                    if (this.intervalindex < this.intervals.length-1){
-                        this.intervalindex++;
-                        this.currentcount = (this.currentinterval())['count'];
-                    }
-                    //otherwise end the process
-                    else{
-                        console.log("No intervals remaining");
-                        clearInterval(this.timer); //stop the timer
-                        this.oncomplete(); //callback
-                        return;
-                    }
-    
-                }       
 
-                //increment and deincrement
-                this.currentcount--;
-                this.elapsedseconds++;
-    
-                //call oninterval callback
-                this.oninterval();
-    
-            }
-    
-    
+            //if the current count is 0 then pick up the next activity to process
+            if (this.currentcount <= 0){
+            
+                //if there are more intervals then pick up the next one
+                if (this.intervalindex < this.intervals.length-1){
+                    this.intervalindex++;
+                    this.currentcount = (this.currentinterval())['count'];
+                }
+                //otherwise end the process
+                else{
+                    console.log("No intervals remaining");
+                    clearInterval(this.timer); //stop the timer
+                    this.oncomplete(); //callback
+                    return;
+                }
+
+            }       
+
+            //increment and deincrement
+            this.currentcount--;
+            this.elapsedseconds++;
+
+            //call oninterval callback
+            this.oninterval();
+
         }, 1000);
+
+    },
+
+    pause : function(){
+        console.log("pause()");
+        clearInterval(this.timer); //stop the timer
 
     },
 
@@ -90,6 +89,12 @@ let countdowntimer = {
 
     reset :  function(){
         console.log("Running reset()");
+       
+        this.timer = null;
+        this.skipflag = false;
+        this.elapsedseconds = 0;
+        this.intervalindex = -1;   
+        this.currentcount = 0;
 
     }
 

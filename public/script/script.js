@@ -311,15 +311,15 @@ $(document).ready(function(){
         }else if ($(this).val() == "Pause")
         {
             console.log("Pause button clicked")
-            t1.ispaused = true;
+            t1.pause();
             $(this).val("Continue") 
 
 
         }else if ($(this).val() == "Continue")
         {
             console.log("Continue button clicked")
-            
-            t1.ispaused = false;
+
+            t1.start();
             $(this).val("Pause") 
 
 
