@@ -9,6 +9,25 @@ input[type=text], select, textarea{
     font-size:2rem;
   }
   
+
+  input[type=checkbox]{
+    -ms-transform: scale(2); /* IE */
+    -moz-transform: scale(2); /* FF */
+    -webkit-transform: scale(2); /* Safari and Chrome */
+    -o-transform: scale(2); /* Opera */
+    transform: scale(2);
+
+    font-size:2rem;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    font-size:2rem;
+  }
+  
+  
+
+
   /* Style the label to display next to the inputs */
   label {
     padding: 12px 12px 12px 0;

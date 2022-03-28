@@ -9,6 +9,7 @@ let countdowntimer = {
     actions : [], //individual countdown tasks to run 
     actionindex : -1, //current action index
     currentcount : 0,
+    playsound : true,
     endsoundpath :null, //play this sound  on the end intervals
     endsound :null, //container for the sound object
     endsoundcount : 3, 
@@ -48,10 +49,13 @@ let countdowntimer = {
             }       
 
             //play sound
-            if (this.endsound != null && this.currentcount <= this.endsoundcount){
-                
-                this.endsound.play();
-
+           
+            if (this.playsound)
+            {
+                 //** move this to being specified by input activities
+                if (this.endsound != null && this.currentcount <= this.endsoundcount){
+                    this.endsound.play();
+                }
             }
 
         

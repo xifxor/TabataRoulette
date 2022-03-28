@@ -17,6 +17,7 @@ let config = {
     rep_duration : 20,  //work time per rep
     rep_rest_duration : 10,  //reset between reps
     activity_rest_duration : 0,  //rest between activities  
+    playsound : true
 }
 
 
@@ -198,13 +199,31 @@ $(document).ready(function(){
         config.rep_duration = parseInt( $('#input_rep_duration').val() );
         config.rep_rest_duration = parseInt( $('#input_rep_rest_duration').val() );
         config.activity_rest_duration = parseInt( $('#input_activity_rest_duration').val() );
+        config.playsound =  $('#input_playsound').is(":checked");
 
-        config.activities = s1.selectedActivities;
+        //update the activities queue to the timer based on new config
         t1.actions = getActivityQueue();
+        console.log("Setting sound to " + config.playsound )
+        t1.playsound = config.playsound ;
 
         $(divTotalTime).html("total time: " + t1.totaltime());
 
     })
+
+    
+    //update config form values
+    $('#input_warm_up_time').val( config.warm_up_time );
+    $('#input_cool_down_time').val( config.cool_down_time );
+    $('#input_set_count').val( config.set_count );
+    $('#input_set_rest_duration').val( config.set_rest_duration );
+    $('#input_reps_count').val( config.reps_count );
+    $('#input_rep_duration').val( config.rep_duration );
+    $('#input_rep_rest_duration').val( config.rep_rest_duration );
+    $('#input_activity_rest_duration').val( config.activity_rest_duration );
+    $('#input_playsound').prop('checked', config.playsound );
+
+
+
 
     //add keep-alive video
     document.body.appendChild(video);
@@ -254,7 +273,6 @@ $(document).ready(function(){
 
     //timer interval callback
     t1.oninterval = function(){
-        console.log("oninterval callback");
 
         currentActivity = t1.currentaction();
 
@@ -269,22 +287,19 @@ $(document).ready(function(){
 
     }
 
-    //time complete callback
+    //set complete callback
     t1.oncomplete = function(){
-        console.log("The timer completed");
+        console.log("oncomplete callback");
+
+       $('#screen_complete').toggle();
+
     }
 
+    //complete  done button
+    $('#completedonebutton').click(function(){
+        $('#screen_complete').hide();     
+    }); 
 
-
-    //update config form values
-    $('#input_warm_up_time').val( config.warm_up_time );
-    $('#input_cool_down_time').val( config.cool_down_time );
-    $('#input_set_count').val( config.set_count );
-    $('#input_set_rest_duration').val( config.set_rest_duration );
-    $('#input_reps_count').val( config.reps_count );
-    $('#input_rep_duration').val( config.rep_duration );
-    $('#input_rep_rest_duration').val( config.rep_rest_duration );
-    $('#input_activity_rest_duration').val( config.activity_rest_duration );
 
 
 

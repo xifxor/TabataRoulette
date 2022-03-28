@@ -133,6 +133,22 @@
 }
 
 
+
+#screen_complete {
+  display:none;
+  font-size:2em;
+}
+
+
+#screen_complete input[type=button] {
+  font-size:1em;
+  
+  height:3em;
+  width:7em;
+}
+
+
+
 #screen_config input[type=button] {
   font-size:1em;
   
@@ -144,7 +160,7 @@
 .infobox {
 
   position: absolute;
-  display:none;
+
   top: 6em;
   left:1em;
   right:1em;
