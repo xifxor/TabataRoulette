@@ -153,7 +153,8 @@ function getActivityQueue(){
 //create fake video to keep screen alive
     var video = document.createElement('video');
     video.setAttribute('loop', '');
-    video.setAttribute('style', 'position: fixed; display:none;');
+    video.setAttribute('style', 'position: fixed; display:none; height:0px; width:0px;');
+    video.setAttribute('playsinline',''); 
 
     // A helper to add sources to video
     function addSourceToVideo(element, type, dataURI) {
