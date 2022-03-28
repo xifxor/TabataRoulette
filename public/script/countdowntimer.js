@@ -5,9 +5,13 @@ let countdowntimer = {
     timer : null, //interval object
     skipflag : false, //if this is true then the current activity will be skipped
     elapsedseconds : 0,
+    /// ** change to setActions() function so that assets can be loaded
     actions : [], //individual countdown tasks to run 
     actionindex : -1, //current action index
     currentcount : 0,
+    endsoundpath :null, //play this sound  on the end intervals
+    endsound :null, //container for the sound object
+    endsoundcount : 3, 
     currentaction : function(){
        return this.actions[ this.actionindex ];
     },
@@ -16,8 +20,13 @@ let countdowntimer = {
     start : function(){
 
         console.log("start()");
-       // console.log("action count: " + this.actions.length )
-        
+       
+        //load sound if not already loaded
+        if (this.endsoundpath != null){
+            this.endsound = new Audio( this.endsoundpath );
+        }
+
+        //start the timer
         this.timer = setInterval(() => {
 
             //if the current count is 0 then pick up the next activity to process
@@ -38,12 +47,21 @@ let countdowntimer = {
 
             }       
 
+            //play sound
+            if (this.endsound != null && this.currentcount <= this.endsoundcount){
+                
+                this.endsound.play();
+
+            }
+
+        
+
+            //call oninterval callback
+            this.oninterval(this.currentcount);
+
             //increment and deincrement
             this.currentcount--;
             this.elapsedseconds++;
-
-            //call oninterval callback
-            this.oninterval();
 
         }, 1000);
 

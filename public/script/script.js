@@ -128,6 +128,8 @@ function getActivityQueue(){
 
 
 
+
+
 // Restricts input for the set of matched elements to the given inputFilter function.
 (function($) {
     $.fn.inputFilter = function(inputFilter) {
@@ -145,6 +147,30 @@ function getActivityQueue(){
       });
     };
 }(jQuery));
+
+
+//create fake video to keep screen alive
+    var video = document.createElement('video');
+    video.setAttribute('loop', '');
+    video.setAttribute('style', 'position: fixed; display:none;');
+
+    // A helper to add sources to video
+    function addSourceToVideo(element, type, dataURI) {
+        var source = document.createElement('source');
+        source.src = dataURI;
+        source.type = 'video/' + type;
+        element.appendChild(source);
+    }
+
+    // A helper to concat base64
+    var base64 = function(mimeType, base64) {
+        return 'data:' + mimeType + ';base64,' + base64;
+    };
+
+    // Add Fake sourced
+    addSourceToVideo(video,'webm', base64('video/webm', 'GkXfo0AgQoaBAUL3gQFC8oEEQvOBCEKCQAR3ZWJtQoeBAkKFgQIYU4BnQI0VSalmQCgq17FAAw9CQE2AQAZ3aGFtbXlXQUAGd2hhbW15RIlACECPQAAAAAAAFlSua0AxrkAu14EBY8WBAZyBACK1nEADdW5khkAFVl9WUDglhohAA1ZQOIOBAeBABrCBCLqBCB9DtnVAIueBAKNAHIEAAIAwAQCdASoIAAgAAUAmJaQAA3AA/vz0AAA='));
+    addSourceToVideo(video, 'mp4', base64('video/mp4', 'AAAAHGZ0eXBpc29tAAACAGlzb21pc28ybXA0MQAAAAhmcmVlAAAAG21kYXQAAAGzABAHAAABthADAowdbb9/AAAC6W1vb3YAAABsbXZoZAAAAAB8JbCAfCWwgAAAA+gAAAAAAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAIVdHJhawAAAFx0a2hkAAAAD3wlsIB8JbCAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAIAAAACAAAAAABsW1kaWEAAAAgbWRoZAAAAAB8JbCAfCWwgAAAA+gAAAAAVcQAAAAAAC1oZGxyAAAAAAAAAAB2aWRlAAAAAAAAAAAAAAAAVmlkZW9IYW5kbGVyAAAAAVxtaW5mAAAAFHZtaGQAAAABAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAAEcc3RibAAAALhzdHNkAAAAAAAAAAEAAACobXA0dgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAIAAgASAAAAEgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABj//wAAAFJlc2RzAAAAAANEAAEABDwgEQAAAAADDUAAAAAABS0AAAGwAQAAAbWJEwAAAQAAAAEgAMSNiB9FAEQBFGMAAAGyTGF2YzUyLjg3LjQGAQIAAAAYc3R0cwAAAAAAAAABAAAAAQAAAAAAAAAcc3RzYwAAAAAAAAABAAAAAQAAAAEAAAABAAAAFHN0c3oAAAAAAAAAEwAAAAEAAAAUc3RjbwAAAAAAAAABAAAALAAAAGB1ZHRhAAAAWG1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAAK2lsc3QAAAAjqXRvbwAAABtkYXRhAAAAAQAAAABMYXZmNTIuNzguMw=='));
+
 
 
 
@@ -180,7 +206,24 @@ $(document).ready(function(){
 
     })
 
-    
+    //add keep-alive video
+    document.body.appendChild(video);
+
+    // Start playing video after any user interaction.
+    // NOTE: Running video.play() handler without a user action may be blocked by browser.
+    var playFn = function() {
+        video.play();
+        document.body.removeEventListener('touchend', playFn);
+    };
+
+    document.body.addEventListener('touchend', playFn);
+
+
+    //create a new timer
+    const t1 = Object.create(countdowntimer); 
+    t1.endsoundpath = "sounds/beep1.mp3";
+
+        
     //slots loaded callback
     let loadedCallback = function (){
         console.log("Slots load callback");
@@ -204,11 +247,10 @@ $(document).ready(function(){
     
     }
 
+
     //create a new slot group
     const s1 = new SlotGroup("#slots1", 4, loadedCallback);
 
-    //create a new timer
-    const t1 = Object.create(countdowntimer); 
 
     //timer interval callback
     t1.oninterval = function(){
@@ -250,15 +292,29 @@ $(document).ready(function(){
         $('#screen_info').toggle();     
     });
 
+        
+    $('#configbutton').click(function(){
+        $('#screen_config').toggle();     
+    });
+
+
+    //config done button
+    $('#configdonebutton').click(function(){
+        $('#screen_config').hide();     
+    }); 
+
 
     $('#spinbutton').click(function(){
         console.log("Spin");
+
+        $('#screen_config').hide(); 
+        $('#screen_info').hide(); 
 
         if ($(this).val() == "Spin")
         {
             //set button and div state
             $('#startbutton').attr("disabled", true);
-            $('#screen_config').hide(); 
+
 
             s1.start();
             $(this).val("Stop") ;
@@ -288,6 +344,9 @@ $(document).ready(function(){
 
     $('#startbutton').click(function(){
 
+        $('#screen_config').hide(); 
+        $('#screen_info').hide(); 
+
         if ($(this).val() == "Start")
         {
             console.log("Start button clicked")
@@ -295,7 +354,6 @@ $(document).ready(function(){
             //reconfigure butons and screens
             $(this).val("Pause") ;
             $('#spinbutton').attr("disabled", true);
-            $('#screen_config').hide(); 
             $('#screen_running').show();
 
             //create activities queue and start
@@ -314,12 +372,8 @@ $(document).ready(function(){
         {
             console.log("Continue button clicked")
 
-            $('#screen_config').hide(); 
             t1.start();
             $(this).val("Pause") 
-
-
-
 
         }
 
@@ -334,13 +388,17 @@ $(document).ready(function(){
             $('#startbutton').attr("disabled", false).val("Start");
             $('#spinbutton').attr("disabled", false);
             $('#screen_config').hide(); 
+            $('#screen_info').hide(); 
+
+            //reset timer
             t1.reset();
 
             //reset background color
             $("body").css("background-color", "var(--color-background)")
 
-            $('#div_set_count, #div_activity_count, #div_rep_count, #div_activity,#div_countdown,#div_remaining_time').html(""); 
-      
+            //clear counter divs
+            $('#div_set_count, #div_activity_count, #div_rep_count').html(""); 
+            $('#div_activity,#div_countdown, #div_remaining_time').html(""); 
       
       
         }
@@ -348,21 +406,8 @@ $(document).ready(function(){
     });
 
 
-    
-    $('#configbutton').click(function(){
-        $('#screen_config').toggle();     
-    });
-
-
-    //config done
-    $('#configdonebutton').click(function(){
-        $('#screen_config').hide();     
-    }); 
-    
-    
-    
- 
-
-
-
 });
+
+
+
+
