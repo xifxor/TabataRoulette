@@ -29,15 +29,15 @@ function getActivityQueue(){
 
     //run warm up interval
     if (config.warm_up_time > 0){
-    queue.push( {
-        "count" : config.warm_up_time,
-        "name" :  "Warm up",
-        "set" : "0",
-        "rep" : "0",
-        "activitycount" : "0",
-        "background-color" : "var(--color-warmup)",
-        func : function(){ }  //testing
-    });
+        queue.push( {
+            "count" : config.warm_up_time,
+            "name" :  "Warm up",
+            "set" : "0",
+            "rep" : "0",
+            "activitycount" : "0",
+            "background-color" : "var(--color-warmup)",
+            func : function(){ }  //testing
+        });
     }
 
     //loop sets
@@ -131,18 +131,18 @@ function getActivityQueue(){
 // Restricts input for the set of matched elements to the given inputFilter function.
     (function($) {
         $.fn.inputFilter = function(inputFilter) {
-        return this.on("input keydown keyup mousedown mouseup select contextmenu drop", function() {
-            if (inputFilter(this.value)) {
-            this.oldValue = this.value;
-            this.oldSelectionStart = this.selectionStart;
-            this.oldSelectionEnd = this.selectionEnd;
-            } else if (this.hasOwnProperty("oldValue")) {
-            this.value = this.oldValue;
-            this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
-            } else {
-            this.value = "";
-            }
-        });
+            return this.on("input keydown keyup mousedown mouseup select contextmenu drop", function() {
+                if (inputFilter(this.value)) {
+                    this.oldValue = this.value;
+                    this.oldSelectionStart = this.selectionStart;
+                    this.oldSelectionEnd = this.selectionEnd;
+                } else if (this.hasOwnProperty("oldValue")) {
+                    this.value = this.oldValue;
+                    this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                } else {
+                    this.value = "";
+                }
+            });
         };
     }(jQuery));
 
@@ -212,10 +212,6 @@ $(document).ready(function(){
             .appendTo(keepAliveVid);
 
         keepAliveVid.appendTo("body");
-
-        
-
-
 
 
     //create a new timer
