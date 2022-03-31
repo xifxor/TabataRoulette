@@ -62,23 +62,24 @@ function SlotGroup(element, slotcount, loadedCallback=null)
         cbfunc = function(x){ _this.slotLoadedCallback(x) }
 
         //create the slot
-        max = 25 + (index * 10); //set increasing max speed
-        _this.slots.push( new Slot(divSlot, index, activityList, max, 2, cbfunc ) );
+        maxSpeed = 25 + (index * 10); //set increasing max speed
+        _this.slots.push( new Slot(divSlot, index, activityList, maxSpeed, 2, cbfunc ) );
 
     });
     
-    //set slot width
-    let totalSlotBorderWidth = parseInt($('.slot').css("border-left-width")) + parseInt($('.slot').css("border-right-width"));
-    let availableWidth = $(_this.element).width() - (totalSlotBorderWidth * slotcount);
-    let slotwidth = (availableWidth / slotcount);
+        //set slot width
+        let totalSlotBorderWidth = parseInt($('.slot').css("border-left-width")) + parseInt($('.slot').css("border-right-width"));
+        let availableWidth = $(_this.element).width() - (totalSlotBorderWidth * _this.slotcount);
+        let slotwidth = (availableWidth / _this.slotcount);
 
-    console.log("Slot Group totalSlotBorderWidth: " + totalSlotBorderWidth);
-    console.log("Slot Group availableWidth: " + availableWidth);
-    console.log("Slot Group slotwidth: " + slotwidth);
+        console.log("Slot Group totalSlotBorderWidth: " + totalSlotBorderWidth);
+        console.log("Slot Group availableWidth: " + availableWidth);
+        console.log("Slot Group slotwidth: " + slotwidth);
 
-    $('.slot').css({width: slotwidth});
-
-
+        $('.slot').css({width: slotwidth});
+        /*_this.slots.forEach((slot, index) => {
+            $(slot.element).css({width: slotwidth});
+        });*/
 
 }
 
@@ -96,6 +97,22 @@ SlotGroup.prototype.slotLoadedCallback = function(name) {
     if (allSlotsLoaded)
     {
         console.log("All slots are now loaded");
+
+        //set slot width once more.
+        // * borderWidth  hasnt always been intialized on first run leading to display issues
+        // * but slot width needs to be set so that images resize and are calculated correctly
+        // * probably needs refactoring.  Dont rely on image size to calculate position, 
+        // *  and dont rely on border size to set container size
+            let totalSlotBorderWidth = parseInt($('.slot').css("border-left-width")) + parseInt($('.slot').css("border-right-width"));
+            let availableWidth = $(_this.element).width() - (totalSlotBorderWidth * _this.slotcount);
+            let slotwidth = (availableWidth / _this.slotcount);
+
+            console.log("Slot Group totalSlotBorderWidth: " + totalSlotBorderWidth);
+            console.log("Slot Group availableWidth: " + availableWidth);
+            console.log("Slot Group slotwidth: " + slotwidth);
+
+            $('.slot').css({width: slotwidth});
+
       
         if (_this.loadedCallback != null){
             console.log("Callback function is present");
