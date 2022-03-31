@@ -29,15 +29,15 @@ function getActivityQueue(){
 
     //run warm up interval
     if (config.warm_up_time > 0){
-    queue.push( {
-        "count" : config.warm_up_time,
-        "name" :  "Warm up",
-        "set" : "0",
-        "rep" : "0",
-        "activitycount" : "0",
-        "background-color" : "var(--color-warmup)",
-        func : function(){ }  //testing
-    });
+        queue.push( {
+            "count" : config.warm_up_time,
+            "name" :  "Warm up",
+            "set" : "0",
+            "rep" : "0",
+            "activitycount" : "0",
+            "background-color" : "var(--color-warmup)",
+            func : function(){ }  //testing
+        });
     }
 
     //loop sets
@@ -128,115 +128,90 @@ function getActivityQueue(){
 }
 
 
-
-
-
 // Restricts input for the set of matched elements to the given inputFilter function.
-(function($) {
-    $.fn.inputFilter = function(inputFilter) {
-      return this.on("input keydown keyup mousedown mouseup select contextmenu drop", function() {
-        if (inputFilter(this.value)) {
-          this.oldValue = this.value;
-          this.oldSelectionStart = this.selectionStart;
-          this.oldSelectionEnd = this.selectionEnd;
-        } else if (this.hasOwnProperty("oldValue")) {
-          this.value = this.oldValue;
-          this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
-        } else {
-          this.value = "";
-        }
-      });
-    };
-}(jQuery));
-
-
-//create fake video to keep screen alive
-    var video = document.createElement('video');
-    video.setAttribute('loop', '');
-    video.setAttribute('style', 'position: fixed; display:none; height:0px; width:0px;');
-    video.setAttribute('playsinline',''); 
-
-    // A helper to add sources to video
-    function addSourceToVideo(element, type, dataURI) {
-        var source = document.createElement('source');
-        source.src = dataURI;
-        source.type = 'video/' + type;
-        element.appendChild(source);
-    }
-
-    // A helper to concat base64
-    var base64 = function(mimeType, base64) {
-        return 'data:' + mimeType + ';base64,' + base64;
-    };
-
-    // Add Fake sourced
-    addSourceToVideo(video,'webm', base64('video/webm', 'GkXfo0AgQoaBAUL3gQFC8oEEQvOBCEKCQAR3ZWJtQoeBAkKFgQIYU4BnQI0VSalmQCgq17FAAw9CQE2AQAZ3aGFtbXlXQUAGd2hhbW15RIlACECPQAAAAAAAFlSua0AxrkAu14EBY8WBAZyBACK1nEADdW5khkAFVl9WUDglhohAA1ZQOIOBAeBABrCBCLqBCB9DtnVAIueBAKNAHIEAAIAwAQCdASoIAAgAAUAmJaQAA3AA/vz0AAA='));
-    addSourceToVideo(video, 'mp4', base64('video/mp4', 'AAAAHGZ0eXBpc29tAAACAGlzb21pc28ybXA0MQAAAAhmcmVlAAAAG21kYXQAAAGzABAHAAABthADAowdbb9/AAAC6W1vb3YAAABsbXZoZAAAAAB8JbCAfCWwgAAAA+gAAAAAAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAIVdHJhawAAAFx0a2hkAAAAD3wlsIB8JbCAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAIAAAACAAAAAABsW1kaWEAAAAgbWRoZAAAAAB8JbCAfCWwgAAAA+gAAAAAVcQAAAAAAC1oZGxyAAAAAAAAAAB2aWRlAAAAAAAAAAAAAAAAVmlkZW9IYW5kbGVyAAAAAVxtaW5mAAAAFHZtaGQAAAABAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAAEcc3RibAAAALhzdHNkAAAAAAAAAAEAAACobXA0dgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAIAAgASAAAAEgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABj//wAAAFJlc2RzAAAAAANEAAEABDwgEQAAAAADDUAAAAAABS0AAAGwAQAAAbWJEwAAAQAAAAEgAMSNiB9FAEQBFGMAAAGyTGF2YzUyLjg3LjQGAQIAAAAYc3R0cwAAAAAAAAABAAAAAQAAAAAAAAAcc3RzYwAAAAAAAAABAAAAAQAAAAEAAAABAAAAFHN0c3oAAAAAAAAAEwAAAAEAAAAUc3RjbwAAAAAAAAABAAAALAAAAGB1ZHRhAAAAWG1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAAK2lsc3QAAAAjqXRvbwAAABtkYXRhAAAAAQAAAABMYXZmNTIuNzguMw=='));
-
-
-
+    (function($) {
+        $.fn.inputFilter = function(inputFilter) {
+            return this.on("input keydown keyup mousedown mouseup select contextmenu drop", function() {
+                if (inputFilter(this.value)) {
+                    this.oldValue = this.value;
+                    this.oldSelectionStart = this.selectionStart;
+                    this.oldSelectionEnd = this.selectionEnd;
+                } else if (this.hasOwnProperty("oldValue")) {
+                    this.value = this.oldValue;
+                    this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                } else {
+                    this.value = "";
+                }
+            });
+        };
+    }(jQuery));
 
 
 $(document).ready(function(){
 
     //set button and div state
-    $('#startbutton').attr("disabled", true);
-    $('#screen_config').hide(); 
+        $('#startbutton').attr("disabled", true);
+    
 
     //set config filters
-    $("#screen_config input[type=text] ").inputFilter(function(value) {
-        return /^\d*$/.test(value);    // Allow digits only, using a RegExp
-    });
+        $("#screen_config input[type=text] ").inputFilter(function(value) {
+            return /^\d*$/.test(value);    // Allow digits only, using a RegExp
+        });
 
     //config change handler
-    $("#screen_config input").change(function(){
-        console.log("Input was changed"); 
+        $("#screen_config input").change(function(){
+            console.log("Input was changed"); 
 
-        config.warm_up_time = parseInt( $('#input_warm_up_time').val() );
-        config.cool_down_time = parseInt( $('#input_cool_down_time').val() );
-        config.set_count  = parseInt( $('#input_set_count').val() );
-        config.set_rest_duration = parseInt( $('#input_set_rest_duration').val() );
-        config.reps_count = parseInt( $('#input_reps_count').val() );
-        config.rep_duration = parseInt( $('#input_rep_duration').val() );
-        config.rep_rest_duration = parseInt( $('#input_rep_rest_duration').val() );
-        config.activity_rest_duration = parseInt( $('#input_activity_rest_duration').val() );
-        config.playsound =  $('#input_playsound').is(":checked");
+            config.warm_up_time = parseInt( $('#input_warm_up_time').val() );
+            config.cool_down_time = parseInt( $('#input_cool_down_time').val() );
+            config.set_count  = parseInt( $('#input_set_count').val() );
+            config.set_rest_duration = parseInt( $('#input_set_rest_duration').val() );
+            config.reps_count = parseInt( $('#input_reps_count').val() );
+            config.rep_duration = parseInt( $('#input_rep_duration').val() );
+            config.rep_rest_duration = parseInt( $('#input_rep_rest_duration').val() );
+            config.activity_rest_duration = parseInt( $('#input_activity_rest_duration').val() );
+            config.playsound =  $('#input_playsound').is(":checked");
 
-        //update the activities queue to the timer based on new config
-        t1.actions = getActivityQueue();
-        console.log("Setting sound to " + config.playsound )
-        t1.playsound = config.playsound ;
+            //update the activities queue to the timer based on new config
+            t1.actions = getActivityQueue();
+            console.log("Setting sound to " + config.playsound )
+            t1.playsound = config.playsound ;
 
-        $(divTotalTime).html("total time: " + t1.totaltime());
+            $(divTotalTime).html("total time: " + t1.totaltime());
 
-    })
+        })
 
     
     //update config form values
-    $('#input_warm_up_time').val( config.warm_up_time );
-    $('#input_cool_down_time').val( config.cool_down_time );
-    $('#input_set_count').val( config.set_count );
-    $('#input_set_rest_duration').val( config.set_rest_duration );
-    $('#input_reps_count').val( config.reps_count );
-    $('#input_rep_duration').val( config.rep_duration );
-    $('#input_rep_rest_duration').val( config.rep_rest_duration );
-    $('#input_activity_rest_duration').val( config.activity_rest_duration );
-    $('#input_playsound').prop('checked', config.playsound );
+        $('#input_warm_up_time').val( config.warm_up_time );
+        $('#input_cool_down_time').val( config.cool_down_time );
+        $('#input_set_count').val( config.set_count );
+        $('#input_set_rest_duration').val( config.set_rest_duration );
+        $('#input_reps_count').val( config.reps_count );
+        $('#input_rep_duration').val( config.rep_duration );
+        $('#input_rep_rest_duration').val( config.rep_rest_duration );
+        $('#input_activity_rest_duration').val( config.activity_rest_duration );
+        $('#input_playsound').prop('checked', config.playsound );
 
 
 
+    //create fake video to keep screen alive
+        var keepAliveVid = $('<video />')
+            .attr("loop",  '')
+            .attr("playsinline",  '')
+            .css({position: 'fixed',  display: 'none', height : '0px', width : '0px'});
 
-    //add keep-alive video
-    document.body.appendChild(video);
+        $('<source>')
+            .attr("src", 'data:video/webm;base64,GkXfo0AgQoaBAUL3gQFC8oEEQvOBCEKCQAR3ZWJtQoeBAkKFgQIYU4BnQI0VSalmQCgq17FAAw9CQE2AQAZ3aGFtbXlXQUAGd2hhbW15RIlACECPQAAAAAAAFlSua0AxrkAu14EBY8WBAZyBACK1nEADdW5khkAFVl9WUDglhohAA1ZQOIOBAeBABrCBCLqBCB9DtnVAIueBAKNAHIEAAIAwAQCdASoIAAgAAUAmJaQAA3AA/vz0AAA=' ) 
+            .attr("type",  'video/webm')
+            .appendTo(keepAliveVid);
 
-    // Start playing video after any user interaction.
-    // NOTE: Running video.play() handler without a user action may be blocked by browser.
-    var playFn = function() {
-        video.play();
-        document.body.removeEventListener('touchend', playFn);
-    };
+         $('<source>')
+            .attr("src", 'data:video/mp4;base64,AAAAHGZ0eXBpc29tAAACAGlzb21pc28ybXA0MQAAAAhmcmVlAAAAG21kYXQAAAGzABAHAAABthADAowdbb9/AAAC6W1vb3YAAABsbXZoZAAAAAB8JbCAfCWwgAAAA+gAAAAAAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAIVdHJhawAAAFx0a2hkAAAAD3wlsIB8JbCAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAIAAAACAAAAAABsW1kaWEAAAAgbWRoZAAAAAB8JbCAfCWwgAAAA+gAAAAAVcQAAAAAAC1oZGxyAAAAAAAAAAB2aWRlAAAAAAAAAAAAAAAAVmlkZW9IYW5kbGVyAAAAAVxtaW5mAAAAFHZtaGQAAAABAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAAEcc3RibAAAALhzdHNkAAAAAAAAAAEAAACobXA0dgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAIAAgASAAAAEgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABj//wAAAFJlc2RzAAAAAANEAAEABDwgEQAAAAADDUAAAAAABS0AAAGwAQAAAbWJEwAAAQAAAAEgAMSNiB9FAEQBFGMAAAGyTGF2YzUyLjg3LjQGAQIAAAAYc3R0cwAAAAAAAAABAAAAAQAAAAAAAAAcc3RzYwAAAAAAAAABAAAAAQAAAAEAAAABAAAAFHN0c3oAAAAAAAAAEwAAAAEAAAAUc3RjbwAAAAAAAAABAAAALAAAAGB1ZHRhAAAAWG1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAAK2lsc3QAAAAjqXRvbwAAABtkYXRhAAAAAQAAAABMYXZmNTIuNzguMw==' )
+            .attr("type",  'video/mp4')
+            .appendTo(keepAliveVid);
 
-    document.body.addEventListener('touchend', playFn);
+        keepAliveVid.appendTo("body");
 
 
     //create a new timer
@@ -303,12 +278,12 @@ $(document).ready(function(){
 
 
 
-
+    //show info box
     $('#infobutton').click(function(){
         $('#screen_info').toggle();     
     });
 
-        
+    //show config box 
     $('#configbutton').click(function(){
         $('#screen_config').toggle();     
     });
@@ -320,17 +295,18 @@ $(document).ready(function(){
     }); 
 
 
+    //spin the slots
     $('#spinbutton').click(function(){
         console.log("Spin");
 
         $('#screen_config').hide(); 
         $('#screen_info').hide(); 
+        $('#screen_complete').hide(); 
 
         if ($(this).val() == "Spin")
         {
             //set button and div state
             $('#startbutton').attr("disabled", true);
-
 
             s1.start();
             $(this).val("Stop") ;
@@ -357,15 +333,18 @@ $(document).ready(function(){
 
     });
 
-
+    // start the excerise timer 
     $('#startbutton').click(function(){
 
         $('#screen_config').hide(); 
         $('#screen_info').hide(); 
+        $('#screen_complete').hide(); 
 
         if ($(this).val() == "Start")
         {
             console.log("Start button clicked")
+
+            keepAliveVid.trigger('play');
 
             //reconfigure butons and screens
             $(this).val("Pause") ;
@@ -380,6 +359,7 @@ $(document).ready(function(){
         }else if ($(this).val() == "Pause")
         {
             console.log("Pause button clicked")
+            keepAliveVid.trigger('pause');
             t1.pause();
             $(this).val("Continue") 
 
@@ -387,7 +367,7 @@ $(document).ready(function(){
         }else if ($(this).val() == "Continue")
         {
             console.log("Continue button clicked")
-
+            keepAliveVid.trigger('play');
             t1.start();
             $(this).val("Pause") 
 
@@ -405,6 +385,9 @@ $(document).ready(function(){
             $('#spinbutton').attr("disabled", false);
             $('#screen_config').hide(); 
             $('#screen_info').hide(); 
+
+            //stop keep-alive vid
+            keepAliveVid.trigger('stop');
 
             //reset timer
             t1.reset();

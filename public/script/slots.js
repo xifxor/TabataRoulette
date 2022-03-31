@@ -24,10 +24,16 @@ var imagePath = "images/"
 * Slot GROUP object
 *
 ***********************************************************************/
-
+//** switching to  literal notation (initializer notation). */
 let SlotGroupX = {
+    parentElement : null,
+    slotcount : 4,
+    slots : null, //holds child slot objects
 
-    onload : function(){}
+    onload : function(){},
+    getactivities : function(){},
+    start : function(){},
+    stop : function(){},
 
 }
 
@@ -48,16 +54,16 @@ function SlotGroup(element, slotcount, loadedCallback=null)
     //create slots
     [...Array(slotcount)].forEach((slot, index) => {
         
-        //create a div for the slot
-        divSlot = document.createElement('div');
 
-        //append the div to the container        
-        $(divSlot).appendTo( $(_this.element) );
+        //create and append the slot div to the container        
+        let divSlot = $("<div>").appendTo( $(_this.element) );
 
+        //callback
+        cbfunc = function(x){ _this.slotLoadedCallback(x) }
 
         //create the slot
-        max = 25 + (index * 10);
-        _this.slots.push( new Slot(divSlot, index, activityList, max, 2, function(x){ _this.slotLoadedCallback(x) } ) );
+        max = 25 + (index * 10); //set increasing max speed
+        _this.slots.push( new Slot(divSlot, index, activityList, max, 2, cbfunc ) );
 
     });
     
@@ -66,11 +72,13 @@ function SlotGroup(element, slotcount, loadedCallback=null)
     let availableWidth = $(_this.element).width() - (totalSlotBorderWidth * slotcount);
     let slotwidth = (availableWidth / slotcount);
 
-    console.log("Setting slot width to " + slotwidth);
+    console.log("Slot Group totalSlotBorderWidth: " + totalSlotBorderWidth);
+    console.log("Slot Group availableWidth: " + availableWidth);
+    console.log("Slot Group slotwidth: " + slotwidth);
+
     $('.slot').css({width: slotwidth});
 
 
-    
 
 }
 
@@ -78,7 +86,7 @@ function SlotGroup(element, slotcount, loadedCallback=null)
 SlotGroup.prototype.slotLoadedCallback = function(name) {
    
     var _this = this;
-    console.log("Slot " + name + " has loaded");
+    console.log("Slot " + name + ": Load Complete");
 
     //check if all slots are loaded
     let allSlotsLoaded = _this.slots.every(function(slot){
@@ -111,7 +119,6 @@ SlotGroup.prototype.slotLoadedCallback = function(name) {
 
 };
 
-
 SlotGroup.prototype.start = function() {
     var _this = this;
 
@@ -123,8 +130,6 @@ SlotGroup.prototype.start = function() {
     });
 
 };
-
-
 
 SlotGroup.prototype.stop = function() {
     var _this = this;
@@ -145,15 +150,15 @@ SlotGroup.prototype.stop = function() {
 
 
 
-
 /************************************************************************
 *
 * Slot object
 *
 ***********************************************************************/
-
+//** switching to  literal notation (initializer notation). */
 let SlotX = {
-
+    parentElement : null,
+    slotname : null,
     onload : function(){}
     
 
@@ -185,15 +190,13 @@ function Slot(element, name, activities, maxspeed, step, loadedCallback) {
 
     console.log("Creating slot " + _this.slotname);
 
-
-
     //configure main element
     $(_this.element).addClass('slot');
 
-    //create & append images container
-    _this.imagesdiv = document.createElement('div');     
-    $(_this.imagesdiv).addClass('slot_image_container')
-        .appendTo( $(_this.element) );
+    //create & append images container     
+    _this.imagesdiv = $('<div>')
+                        .addClass('slot_image_container')
+                        .appendTo( $(_this.element) );
 
     
     //record initial position of the div
@@ -257,8 +260,6 @@ function Slot(element, name, activities, maxspeed, step, loadedCallback) {
                     //get the selected activity
                      _this.getSelectedActivity();
 
-                    
-
                     // run callback
                     _this.loaded = true;
                     _this.loadedCallback(_this.slotname);
@@ -314,7 +315,7 @@ Slot.prototype.start = function() {
         {
             
             //the new top padding is greater than the height of the bottom image
-             
+
             heightOfLastImage = $(_this.imagesdiv).find("img").last().height();
             console.log("Slot " + _this.slotname + ": heightOfLastImage=" + heightOfLastImage);
    
@@ -349,7 +350,7 @@ Slot.prototype.getSelectedActivity = function() {
     
     var _this = this;
 
-    console.log("Slot " + _this.slotname + " : getting selected activity")
+    //console.log("Slot " + _this.slotname + ": getting selected activity")
 
     let cumulativeHeight = _this.toppadding;
     let selectedImage = null;
@@ -359,27 +360,28 @@ Slot.prototype.getSelectedActivity = function() {
 
             //calculate the distance from the top of the images div, to the center point of this image
             imageCenterPoint = cumulativeHeight  + ($(this).height() /2);
-
-
             cumulativeHeight += $(this).height();
-           /* console.log("Slot " + _this.slotname + 
+
+            /* 
+            console.log("Slot " + _this.slotname + 
                         " : index " + index + 
                         " image:" +  $(this).attr("src") + 
                         " y_offset:" + _this.yoffset + 
                         " imageCenterPoint:" + imageCenterPoint + 
                         " centerPointWithOffset:" + _this.centerPointWithOffset  
-                        );*/
+                        );
+            */
 
             //select the image if it's center line hasnt yet met the container center line
             //the last one that matches will be the actual selected one
-             if (imageCenterPoint >=_this.centerPointWithOffset){  
+            if (imageCenterPoint >=_this.centerPointWithOffset){  
                 if (selectedImage == null){
 
                     //we found the selected image.  see which of the activities it relates to 
                     selectedImage = this;
                     //console.log("Slot " + _this.slotname + " : selected image found");
 
-                    // should be a better way to do this
+                    // **should be a better way to do this
                     _this.activities.forEach( (activity, index) => {
 
                         if ( $(selectedImage).attr("src") == activity['fullpath'])
@@ -395,8 +397,6 @@ Slot.prototype.getSelectedActivity = function() {
                 }
 
             }
-           
-        
 
     });
 
